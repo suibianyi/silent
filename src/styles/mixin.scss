@@ -1,0 +1,262 @@
+@mixin clearfix {
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin scrollBar {
+  &::-webkit-scrollbar-track-piece {
+    background: #d3dce6;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #99a9bf;
+    border-radius: 20px;
+  }
+}
+
+@mixin relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+// 不换行
+@mixin no-wrap() {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+//弹窗内容
+@mixin dialog-content{
+  padding: 40px;
+}
+// 弹窗的标题
+
+// 弹窗的标题
+@mixin dialogTitle {
+  font-size: 30px;
+  font-weight: 400;
+  color: #0096ff;
+  line-height: 0;
+  text-align: center;
+}
+
+
+@mixin dialogTitle1 {
+  font-size: 28px;
+  font-weight: 400;
+  color: #0096ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction:column
+
+}
+
+// 弹窗的蓝色小块
+@mixin buleBlock {
+  width: 50px;
+  height: 5px;
+  background: #0096ff;
+  margin: 30px auto 35px;
+}
+
+
+@mixin buleBlock1 {
+
+  width: 50px;
+  height: 3px;
+  background: #0096ff;
+  margin: 15px
+}
+
+
+
+
+@mixin radio {
+  .el-radio {
+    height: auto;
+    padding: 10px 15px;
+    .el-radio__input {
+      display: none !important;
+    }
+    .el-radio__label{
+      padding-left:0px
+    }
+  }
+  .is-checked{
+    background: #409eff !important;
+  }
+  .el-radio__input.is-checked+.el-radio__label{
+    color: #fff;
+  }
+}
+
+//弹窗居中
+@mixin dialog-center {
+  /deep/ .el-dialog{
+    display: flex;
+    flex-direction: column;
+    margin:0 !important;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    /*height:600px;*/
+    max-height:calc(100% - 30px);
+    max-width:calc(100% - 30px);
+  }
+  /deep/  .el-dialog .el-dialog__body{
+    flex:1;
+    overflow: auto;
+  }
+}
+
+//去除弹窗标题和内容样式
+@mixin dialog-clear {
+  /deep/ .el-dialog__header{
+    padding: 0px;
+  }
+  /deep/ .el-dialog__body{
+    padding: 0px;
+  }
+}
+// 弹窗的大小
+@mixin dialogSize {
+  width: 600px !important;
+  .el-dialog__body{
+    padding:25px 25px 0px
+  }
+}
+
+@mixin dialogSize2 {
+  width: 800px !important;
+  .el-dialog__body{
+    padding:0 auto;
+  }
+}
+// 正常弹窗的宽度
+@mixin normalDialog {
+  width: 750px;
+  margin-top: 5vh !important;
+  .el-dialog__body {
+    padding:25px 25px 0px !important;
+  }
+}
+
+@mixin normalDialog2 {
+  // width: 750px;
+  // margin-top: 5vh !important;
+  margin: 0 auto !important;
+  height: 90%;
+  overflow: hidden;
+  .el-dialog__body{
+    // padding:25px 25px 0px !important;
+    position: absolute;
+    left: 0;
+    top: 54px;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+    z-index: 1;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+}
+
+@mixin smallDialog {
+  width: 350px !important;
+  margin-top: 25vh !important;
+  .el-dialog__body{
+    padding:25px 25px 0px
+  }
+}
+
+@mixin middleDialog {
+  width: 650px !important;
+  margin-top: 25vh !important;
+  .el-dialog__body{
+    padding:25px 25px 0px
+  }
+}
+
+@mixin self-adaption-table{
+  width: 95%;
+  height: calc(100% - 245px);
+  background: #fff;
+  margin: 10px auto 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  .el-table {
+    height: 100%;
+    .el-table__body-wrapper {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      position: relative !important;
+      height: calc(100% - 60px) !important;
+    }
+  }
+}
+
+@mixin self-adaption-table2{
+  width: 95%;
+  // display: flex;
+  // justify-content: center;
+  // height: calc(100% - 245px);
+  background: #fff;
+  margin: 10px auto 15px;
+  overflow: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  .el-table {
+    height: 100%;
+    .el-table__body-wrapper {
+      overflow-y: auto !important;
+      overflow-x: auto !important;
+      position: relative !important;
+      // height: calc(100% - 60px) !important;
+    }
+  }
+}
+
+@mixin fix-container-footer {
+  position: absolute;
+  bottom: 0;
+  margin: 0 2.5%;
+  height: 50px;
+  width: 95%;
+  display: flex;
+  align-items: center;
+  .el-pagination {
+    position: absolute;
+    right: 0;
+  }
+}
+
+@mixin fix-container-footer2 {
+  position: relative;
+  bottom: 0;
+  margin: 0 2.5%;
+  height: 50px;
+  width: 95%;
+  display: flex;
+  align-items: center;
+  .el-pagination {
+    position: absolute;
+    right: 0;
+  }
+}
+
+@mixin small-dropdown-item {
+  .el-dropdown-menu {
+    padding: 0;
+  }
+  .el-dropdown-menu__item {
+    padding: 0 10px;
+  }
+}

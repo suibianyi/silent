@@ -1,0 +1,116 @@
+/**
+ * 三角形
+ * @param  {string} $direction 方向
+ * @param  {string} $size      尺寸
+ * @param  {color} $color     颜色
+ * @return {mixin}
+ */
+@mixin triangle($direction: bottom, $size: 40px, $color: color) {
+  width: 0;
+  height: 0;
+  background: 0;
+  border-style: solid;
+  @if $direction == 'top' {
+    border-width: 0 $size $size $size;
+    border-color: transparent transparent $color transparent;
+  }
+  @if $direction == 'right' {
+    border-width: $size 0 $size $size;
+    border-color: transparent transparent transparent $color;
+  }
+  @if $direction == 'bottom' {
+    border-width: $size $size 0 $size;
+    border-color: $color transparent transparent transparent;
+  }
+  @if $direction == 'left' {
+    border-width: $size $size $size 0;
+    border-color: transparent $color transparent transparent;
+  }
+}
+
+@mixin single-text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+$color-main: #3B74F1;
+$color-white: #ffffff;
+$color-black: #000000;
+$color-light-gray: #3e4651;
+$color-dark-gray: #262c33;
+$color-transparent: #ffffff00;.layer {
+  &:hover {
+    outline: 1px solid $color-black !important;
+  }
+}.layer-no-hover {
+  &:hover {
+    outline: 0px !important;
+  }
+}.layer-active {
+  outline: 1px dashed $color-black !important;&:hover {
+    outline: 1px dashed $color-black !important;
+  }
+}.layer-hover {
+  outline: 1px solid $color-black !important;&:hover {
+    outline: 1px solid $color-black !important;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+ul,
+ol,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+input,
+button,
+textarea {
+  outline: 0;
+}
+
+button:-moz-focusring,
+input:-moz-focusring {
+  outline: 0;
+}
+p {
+  max-height: 100%;
+}.container {
+  width: 1170px;
+  margin: 0 auto;
+}.inner {
+  width: 900px;
+  margin: 0 auto;
+}.pull-right {
+  float: right;
+}.pull-left {
+  float: left;
+}.clearfix {
+  &:after {
+    clear: both;
+  }&:before, &:after {
+    content: " ";
+    display: table;
+  }
+}.line-break {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
