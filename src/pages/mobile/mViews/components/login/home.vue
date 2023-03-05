@@ -15,7 +15,7 @@
       <div class="main-input">
         <div class="input-item">
           <img class="input-icon" src="@/assets/mobile/login/account.svg" alt="">
-          <input v-model="account" autocomplete="off" placeholder="请输入账号" class="input" type="text">
+          <input v-model="account" autocomplete="off" placeholder="请输入账号" class="input" type="text" @blur="handlerBlur">
         </div>
         <div class="input-item">
           <img class="input-icon" src="@/assets/mobile/login/password.svg" alt="">
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import { parentInfo } from '@/api/school.js'
 
 export default {
   name: 'MLogin',
@@ -83,6 +85,9 @@ export default {
       }
     }
   },
+  created() {
+    this.handlerBlur = _.debounce(this.blurFn, 1000)
+  },
   async mounted() {
     console.log('123', this.$store.state.settings.tabbarList)
     console.log('123', this.$store)
@@ -107,7 +112,6 @@ export default {
     //     text: '我的'
     //   }
     // ])
-
     console.log('234', this.$store.state.settings.tabbarList)
   },
   methods: {
@@ -205,6 +209,23 @@ export default {
     // 用户点击遮罩层，应该关闭模态框
     close() {
       this.isShow = false
+    },
+    async blurFn(val) {
+      if (this.checked !== 'parent') return
+      if (!val.target.value) return
+      if (!/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(val.target.value)) {
+        this.$Notify({ type: 'warning', message: '请输入正确的手机号~' })
+        return
+      }
+      const { data } = await parentInfo({
+        schoolCode: this.$store.getters.storage.schoolCode,
+        telephone: val.target.value
+      })
+      console.log('验证结果', data)
+      // 1通过  0 失败
+      if (data.result === 0 && data.resultMessage) {
+        this.$Notify({ type: 'warning', message: data.resultMessage })
+      }
     }
   }
 }

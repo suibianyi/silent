@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <!-- <keep-alive>
+      <router-view v-if="keepAlive" />
+    </keep-alive>
+    <router-view v-if="!keepAlive" /> -->
     <router-view />
   </div>
 </template>
@@ -7,6 +11,27 @@
 <script>
 export default {
   name: 'App',
+  data() {
+    return {
+      keepAlive: false
+    }
+  },
+  watch: {
+    $route: {
+      handler(newVal) {
+        if (this && this.$store) {
+          if (this.$store.getters.keepAlive) {
+            this.keepAlive = true
+          } else {
+            this.keepAlive = false
+          }
+          console.log('watch我发现keepAlive', this.$store.getters.keepAlive)
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   async beforeCreate() {
     await this.$store.dispatch('initPk')
   }

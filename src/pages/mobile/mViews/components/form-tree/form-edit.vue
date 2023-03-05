@@ -11,6 +11,11 @@
           :rules="[{ required: true, message: '请输入名称' }]"
         />
         <van-field v-model="data" name="编辑使用" label="编辑使用" placeholder="value" @click="chooseSpecial(0,'edit')" />
+        <van-cell center title="是否必填">
+          <template #right-icon>
+            <van-switch v-model="required" size="24" />
+          </template>
+        </van-cell>
         <div class="form">
           请求参数设置
           <van-field
@@ -132,6 +137,7 @@ export default {
       specialIndex: -1,
       specialTree: [],
       treeMode: '',
+      required: true,
       label: '',
       data: '',
       request: {
@@ -164,6 +170,9 @@ export default {
           for (const item of this.request.data) {
             item.value = JSON.stringify(item.value)
           }
+        }
+        if (this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].formList[this.editIndex].require) {
+          this.required = this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].formList[this.editIndex].require
         }
         if (this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].formList[this.editIndex].response) {
           this.response = this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].formList[this.editIndex].response
@@ -247,6 +256,7 @@ export default {
       for (const item of tempRequest.data) {
         item.value = JSON.parse(item.value)
       }
+      this.$store.dispatch('editFormComponent', { configIndex: this.configIndex, editIndex: this.editIndex, pageListName: this.$store.getters.currentPage, key: 'require', value: this.required })
       this.$store.dispatch('editFormComponent', { configIndex: this.configIndex, editIndex: this.editIndex, pageListName: this.$store.getters.currentPage, key: 'request', value: tempRequest })
       this.$store.dispatch('editFormComponent', { configIndex: this.configIndex, editIndex: this.editIndex, pageListName: this.$store.getters.currentPage, key: 'response', value: this.response })
       this.$store.dispatch('editFormComponent', { configIndex: this.configIndex, editIndex: this.editIndex, pageListName: this.$store.getters.currentPage, key: 'label', value: this.label })

@@ -3,26 +3,28 @@
     <van-popup v-model="showPopup" :round="true" :style="{ width: '100%', height: '100%' }" :closeable="true" @close="closePopup">
       <div class="popup-content">
         <van-form>
-          <van-swipe-cell v-for="(item,index) in formList" :key="item.label+index">
-            <van-field
-              v-model="item.model.text"
-              :name="item.label"
-              :label="item.label"
-              :type="item.type||'text'"
-              :required="item.require||false"
-              :placeholder="item.placeholder || ''"
-              :rules="item.rules || []"
-              :readonly="item.component=='output'"
-            >
-              <template v-if="item.component=='input'" #input>
-                <component :is="item.key" />
+          <draggable :value="formList" @input="dragComponent" @start="chooseDrag" @end="dragEnd">
+            <van-swipe-cell v-for="(item,index) in formList" :key="item.label+index">
+              <van-field
+                v-model="item.model.text"
+                :name="item.label"
+                :label="item.label"
+                :type="item.type||'text'"
+                :required="item.require||false"
+                :placeholder="item.placeholder || ''"
+                :rules="item.rules || []"
+                :readonly="item.component=='output'"
+              >
+                <template v-if="item.component=='input'" #input>
+                  <component :is="item.key" />
+                </template>
+              </van-field>
+              <template #right>
+                <van-button square text="编辑" type="info" class="delete-button" @click="editFormListData(item, index)" />
+                <van-button square text="删除" type="danger" class="delete-button" @click="delFormListData(index)" />
               </template>
-            </van-field>
-            <template #right>
-              <van-button square text="编辑" type="info" class="delete-button" @click="editFormListData(item, index)" />
-              <van-button square text="删除" type="danger" class="delete-button" @click="delFormListData(index)" />
-            </template>
-          </van-swipe-cell>
+            </van-swipe-cell>
+          </draggable>
           <div class="add-comp" @click="showAddComponent=true">
             <van-icon name="plus" size="50" />
           </div>
@@ -159,6 +161,7 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import { formatTree } from '@/mUtils'
 import tree from '../tree/index123.vue'
 const files = require.context('../../components', true, /index.vue$/)
@@ -188,6 +191,7 @@ configs.keys().forEach((key) => {
 export default {
   components: {
     ...components,
+    Draggable,
     tree
   },
   props: {
@@ -228,6 +232,7 @@ export default {
       configComponent: '',
       dialogVisible: false,
       editIndex: 0,
+      dragFlag: false,
       componentsList: [{
         describe: {
           name: {
@@ -383,6 +388,16 @@ export default {
   },
   methods: {
     formatTree,
+    dragComponent(value) {
+      console.log('拖动后的结果是', value)
+      this.formList = value
+    },
+    chooseDrag() {
+      this.dragFlag = true
+    },
+    dragEnd() {
+      this.dragFlag = false
+    },
     closePopup() {
       this.$emit('on-close')
     },

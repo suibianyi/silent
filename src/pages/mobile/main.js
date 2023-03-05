@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+// import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import Vant from 'vant'
 import 'vant/lib/index.css'
@@ -8,7 +8,7 @@ import '@vant/touch-emulator'
 import '@/styles/index.scss' // global css
 import App from '@/pages/mobile/App'
 import store from '@/store'
-import router from '@/router/mobile'
+import router from '@/router'
 import * as filters from '@/filters' // global filters
 import { Notify } from 'vant'
 import { Dialog } from 'vant'
@@ -46,9 +46,10 @@ Vue.config.productionTip = false
 Vue.prototype.$Notify = Notify
 Vue.prototype.$eventBus = new Vue() // 全局总线
 
-new Vue({
+const vue = new Vue({
   el: '#app',
   router,
   store,
   render: h => h(App)
 })
+export default vue

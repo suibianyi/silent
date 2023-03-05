@@ -55,24 +55,6 @@
           <van-button square text="删除" type="danger" class="delete-button" @click="delSpecialData(index)" />
         </template>
       </van-swipe-cell>
-      <!-- <div style="margin: 16px;">
-          <van-button round block type="info" native-type="submit" @click="query">请求</van-button>
-        </div> -->
-      请求结果解析设置
-      <van-field
-        v-model="response.swipeList"
-        readonly
-        name="url"
-        label="swipeList"
-        @click="query"
-      />
-      <van-field
-        v-model="response.swipeListCor"
-        readonly
-        name="对应字段"
-        label="对应字段"
-        @click="query"
-      />
       <div style="margin: 16px;">
         <van-button round block type="info" native-type="submit" @click="confirm">确定</van-button>
       </div>
@@ -85,7 +67,7 @@
 </template>
 
 <script>
-import { splitTreeRes, formatTree } from '@/mUtils'
+import { formatTree } from '@/mUtils'
 import {
   mRequest
 } from '@/api/request'
@@ -110,14 +92,11 @@ export default {
       specialTree: [],
       treeMode: '',
       request: {
+        id: '',
         url: '',
         method: 'get',
         data: [],
         specialData: []
-      },
-      response: {
-        swipeList: '',
-        swipeListCor: ''
       }
     }
   },
@@ -126,14 +105,11 @@ export default {
   watch: {
     configIndex: {
       handler(newVal) {
-        if (this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].request) {
-          this.request = this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].request
+        if (this.$store.getters.pageList[this.$store.getters.currentPage].requestData && this.$store.getters.pageList[this.$store.getters.currentPage].requestData[newVal]) {
+          this.request = this.$store.getters.pageList[this.$store.getters.currentPage].requestData[newVal]
           for (const item of this.request.data) {
             item.value = JSON.stringify(item.value)
           }
-        }
-        if (this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].response) {
-          this.response = this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].response
         }
       },
       deep: true,
@@ -172,11 +148,6 @@ export default {
     chooseResult(val) {
       if (this.treeMode === 'special') {
         this.request.specialData[this.specialIndex].value = val.data
-      } else {
-        const str = splitTreeRes(val.data)
-        console.log('格式化后的str是', str)
-        this.response.swipeList = str.list
-        this.response.swipeListCor = str.cor
       }
     },
     chooseSpecial(index) {
@@ -203,8 +174,10 @@ export default {
       for (const item of tempRequest.data) {
         item.value = JSON.parse(item.value)
       }
-      this.$store.dispatch('editComponent', { index: this.configIndex, pageListName: this.$store.getters.currentPage, key: 'request', value: this.request })
-      this.$store.dispatch('editComponent', { index: this.configIndex, pageListName: this.$store.getters.currentPage, key: 'response', value: this.response })
+      if (!this.request.id || this.request.id === '') {
+        this.request.id = Date.now().toString(36)
+      }
+      this.$store.dispatch('editRequestData', { index: this.configIndex, pageListName: this.$store.getters.currentPage, key: this.request.id, value: this.request })
       console.log('最后的结果是', tempRequest)
       this.$emit('on-close')
     }

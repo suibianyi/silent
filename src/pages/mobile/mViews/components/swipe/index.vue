@@ -29,6 +29,7 @@ export default {
       if (image.page) {
         this.$store.dispatch('setCurrentPage', { page: image.page })
         this.$store.commit('SET_REFERENCE', image)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: image })
       }
     }
   }

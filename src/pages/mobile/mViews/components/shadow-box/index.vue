@@ -2,7 +2,7 @@
   <div class="shadow-box">
     <div v-for="value in shadowBoxList" :key="value.text" @click="switchPic(value)">
       <div class="container" :class="value.empty? 'nobox' : ''">
-        <div v-if="value.imageUrl" class="content">
+        <div class="content">
           <img :src="value.imageUrl" alt="">
           <div v-if="value.text" class="name">
             {{ value.text }}
@@ -15,6 +15,7 @@
 
 <script>
 import _ from 'lodash'
+import { judgeAuth } from '@/mUtils'
 export default {
   data() {
     return {
@@ -39,7 +40,13 @@ export default {
           return cloneShadowBoxList
         }
       }
-      return this.$store.getters.shadowBoxList
+      return this.$store.getters.shadowBoxList.filter((item) => {
+        if (item.auth && item.auth.length > 0) {
+          console.log('判断权限的结果是', judgeAuth(item.auth, this.$store.getters.storage.auths))
+          return judgeAuth(item.auth, this.$store.getters.storage.auths)
+        }
+        return true
+      })
     }
   },
   mounted() {
@@ -63,6 +70,7 @@ export default {
 	box-shadow:none !important
 }
 .shadow-box {
+    min-height: 50px;
     padding: 10px 10px 0px 10px;
     display: flex;
     flex-wrap: wrap;

@@ -101,6 +101,9 @@ export default {
     },
     async confirm() {
       console.log('跳转', this.schoolCode)
+      if (this.$store.getters.mode === 'editor') {
+        this.authFlag = true
+      }
       this.$store.commit('SET_USERSCHOOL', this.schoolCode)
       if (this.authFlag) {
         this.$store.commit('SET_LOGINPAGE', 'home')

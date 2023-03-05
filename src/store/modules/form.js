@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import {
   mRequest
 } from '@/api/request'
@@ -37,6 +38,9 @@ const form = {
         if (item.data && item.data !== '') {
           item.model.text = formatReference(storage.state, item.data)
           item.model.value = formatReference(storage.state, item.data)
+          if (item.key === 'form-calendar') {
+            item.model.text = moment(formatReference(storage.state, item.data)).format(item.type)
+          }
         }
       }
       console.log('得到的formlist是', formList)

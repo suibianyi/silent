@@ -4,7 +4,10 @@ const settings = {
     isIphoneX: false,
     pageChange: ['home'],
     schoolCode: 'HSHDEV',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    mode: 'user', // 使用模式user对应index，editor对应create
+    frameId: '',
+    keepAlive: false
   },
   mutations: {
     PUSH_PAGECHANGE: (state, data) => {
@@ -18,6 +21,15 @@ const settings = {
     },
     SET_BACKGROUND_COLOR: (state, data) => {
       state.backgroundColor = data
+    },
+    SET_MODE: (state, data) => {
+      state.mode = data
+    },
+    SET_FRAME_ID: (state, data) => {
+      state.frameId = data
+    },
+    SET_KEEPALIVE: (state, data) => {
+      state.keepAlive = data
     }
   },
 
@@ -33,6 +45,19 @@ const settings = {
       if (data) {
         commit('SET_BACKGROUND_COLOR', data)
       }
+    },
+    setMode: ({ commit, state, dispatch }, data) => {
+      if (data) {
+        commit('SET_MODE', data)
+      }
+    },
+    setFrameId: ({ commit, state, dispatch }, data) => {
+      if (data) {
+        commit('SET_FRAME_ID', data)
+      }
+    },
+    setKeepAlive: ({ commit, state, dispatch }, data) => {
+      commit('SET_KEEPALIVE', data)
     }
   }
 }

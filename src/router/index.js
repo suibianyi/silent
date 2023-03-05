@@ -84,13 +84,31 @@ export const constantRouterMap = [
     }
   },
   {
-    path: '/mobile',
+    path: '/register',
+    component: () => {
+      return import('@/pages/mobile/mViews/components/register/index')
+    }
+  },
+  // {
+  //   path: '/mobile',
+  //   component: () => {
+  //     return import('@/pages/mobile/mViews/index')
+  //   }
+  // },
+  {
+    path: '/mobile/:page',
     component: () => {
       return import('@/pages/mobile/mViews/index')
     }
   },
+  // {
+  //   path: '/whoisyourdaddy',
+  //   component: () => {
+  //     return import('@/pages/mobile/mViews/create')
+  //   }
+  // },
   {
-    path: '/mobile/whoisyourdaddy',
+    path: '/whoisyourdaddy/:page',
     component: () => {
       return import('@/pages/mobile/mViews/create')
     }
@@ -103,6 +121,9 @@ export const asyncRouterMap = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
+  // scrollBehavior: () => {
+  //   history.pushState(null, null, document.URL)
+  // },
   routes: constantRouterMap
 })
 

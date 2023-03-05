@@ -28,6 +28,7 @@ export default {
         if (this.$store.getters.tab.tabList.length) {
           const data = _.assign(this.$store.state.storage.reference, { tab: this.$store.getters.tab.tabList[this.active].value, tabActive: newVal })
           this.$store.commit('SET_REFERENCE', data)
+          this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: data })
           this.$store.dispatch('refreshPage')
         }
       },

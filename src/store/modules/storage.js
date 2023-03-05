@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { JSEncrypt } from 'jsencrypt'
 import encBase64 from 'crypto-js/enc-base64'
 import encUtf8 from 'crypto-js/enc-utf8'
@@ -26,6 +27,7 @@ import {
   formatReference
 } from '@/mUtils'
 // 用做缓存
+import setting from './settings'
 
 const storage = {
   state: {
@@ -46,10 +48,21 @@ const storage = {
     auths: '',
     type: -1, // 用户类型 -1-root 0-student 1-teacher 2-parent
     reference: {},
+    pageStore: {},
     token: getToken()
   },
   mutations: {
+    ADD_PAGE_STORE: (state, data) => {
+      console.log('addpageStore', data)
+      Vue.set(state.pageStore, data.pageStoreName, data.pageStoreData)
+      // const objKey = Object.keys(state.pageStore)
+      // if (objKey.length > 10) {
+      //   // 这里要删除一些
+      // }
+      console.log('nowpageStore', state.pageStore)
+    },
     SET_REFERENCE: (state, data) => {
+      console.log('开始重置reference', data)
       state.reference = data
     },
     SET_USER: (state, data) => {
@@ -130,6 +143,10 @@ const storage = {
     }
   },
   actions: {
+    // 新增页面缓存值
+    addPageStore: ({ commit }, data) => {
+      commit('ADD_PAGE_STORE', data)
+    },
     // 获取校区信息
     async school({ commit }) {
       const { data } = await getSchool.get()
@@ -216,7 +233,12 @@ const storage = {
           role = 'parent'
           break
       }
-      const frameList = (await getFrameList({ role, schoolCode: state.schoolCode })).data
+      let frameList = []
+      if (setting.state.mode === 'editor') {
+        frameList = (await getFrameList({ role, schoolCode: state.schoolCode, _id: setting.state.frameId })).data
+      } else {
+        frameList = (await getFrameList({ role, schoolCode: state.schoolCode, inUse: true })).data
+      }
       console.log('我从数据库取到的模板是', frameList)
       if (frameList.length === 1) {
         dispatch('setPagelist', { pageList: frameList[0].fram, page: '' })
@@ -232,8 +254,17 @@ const storage = {
         type,
         school,
         openid: state.webAuth.openid,
-        password: encrypted
+        password: encrypted,
+        platform: 'mwoa'
       })
+      if (data.checkMsg && type === 'parent') {
+        Vue.prototype.$notify({
+          message: data.checkMsg,
+          type: 'warning',
+          duration: 2 * 1000
+        })
+        return
+      }
       console.log('login data', data)
       setToken(data.token)
       state.loginForm = {}

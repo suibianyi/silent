@@ -53,10 +53,12 @@ export default {
     switchPic(value) {
       if (value.page) {
         this.$store.commit('SET_REFERENCE', value)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.dispatch('setCurrentPage', { page: value.page })
         // this.$store.commit(`${this.$store.getters.dynamicJumpDate}`, value)
       } else if (this.$store.getters.dynamic.dynamicJumpPage.page !== '') {
         this.$store.commit('SET_REFERENCE', value)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic.dynamicJumpPage.page })
         // this.$store.commit(`${this.$store.getters.dynamic.dynamicJumpDate}`, value)
       }

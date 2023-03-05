@@ -74,7 +74,7 @@ export default {
             this.attendanceShow = '考勤管理-事件考勤'
           }
           if (this.attendance.firstPage === 'user-event-attendance') {
-            this.attendanceShow = '学生查看事件考勤'
+            this.attendanceShow = '学生家长查看事件考勤'
           }
         }
       },

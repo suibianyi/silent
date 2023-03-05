@@ -35,3 +35,20 @@ export function updateFrameList(data) {
     data
   })
 }
+
+// 导出模板
+// export function exportFrameList(params) {
+//   return request({
+//     url: '/export/fram',
+//     method: 'get',
+//     params
+//   })
+// }
+
+export function importFrameList(data) {
+  return request({
+    url: '/import/fram',
+    method: 'post',
+    data
+  })
+}

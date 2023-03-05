@@ -99,7 +99,20 @@ export default {
       return false
     }
   },
+  watch: {
+    $route: {
+      handler(newVal) {
+        console.log('我发现路由变了', this.$route.params.page)
+        this.$store.dispatch('setMode', 'user')
+        this.$store.dispatch('setCurrentPage', { page: this.$route.params.page })
+        this.$store.dispatch('loadPageList', { page: this.$store.getters.currentPage })
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   mounted() {
+    this.$store.dispatch('setMode', 'user')
     console.log('我要开始赋值啦', this.$store.getters.currentPage)
     const queryData = parseSearchArgs()
     console.log('queryData', queryData)
@@ -112,7 +125,9 @@ export default {
       this.$store.commit('SET_LOGINPAGE', 'home')
       this.$store.dispatch('setCurrentPage', { page: 'login' })
     }
-    this.$store.dispatch('setCurrentPage', { page: this.$store.getters.currentPage })
+    this.$store.dispatch('loadPageList', { page: this.$store.getters.currentPage })
+    // this.$store.dispatch('setCurrentPage', { page: this.$store.getters.currentPage })
+    console.log('我来看看这个时候的$route.params', this.$route.params.page)
   },
   beforeDestroy() {
   },

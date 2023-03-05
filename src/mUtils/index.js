@@ -191,15 +191,32 @@ export function formatPageListRes(data, val) {
 }
 
 export function formatTreeSelected(arr) {
-  let newArr = []
-  if (arr !== undefined && arr.length > 0) {
-    newArr = arr.map(item => {
-      item.state = { selected: true }
-      if (item.children !== undefined && item.children.length > 0) {
-        this.formatTreeSelected(item.children)
-      }
-      return item
-    })
+  console.log('收到的树结构是', arr)
+  arr.forEach((el) => {
+    el.state = { checked: true }
+    formatTreeSelected(el.children || [])
+  })
+  return arr
+}
+
+export function formatAuthShow(arr) {
+  let show = ''
+  for (const item of arr) {
+    show = show + item.text + ' '
   }
-  return newArr
+  return show
+}
+
+export function judgeAuth(arr, userAuth) {
+  console.log('收到的权限对比是', arr, userAuth)
+  for (const item of arr) {
+    if (_.indexOf(userAuth, item.id) !== -1) {
+      return true
+    }
+  }
+  return false
+}
+
+export function handlerAvtion(action) {
+  console.log('收到的操作是', action)
 }

@@ -8,12 +8,14 @@
 import eventAttendanceStatistics from './event-attendance-statistics'
 import eventAttendanceClassify from './event-attendance-classify'
 import eventAttendanceDetail from './event-attendance-detail'
+import userEventAttendance from './user-event-attendance'
 
 export default {
   components: {
     eventAttendanceStatistics,
     eventAttendanceClassify,
-    eventAttendanceDetail
+    eventAttendanceDetail,
+    userEventAttendance
   },
   data() {
     return {

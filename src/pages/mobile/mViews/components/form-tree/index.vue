@@ -75,7 +75,7 @@ export default {
     console.log('tree的show', this.show)
     this.updateFlag = false
     await this.getTree()
-    console.log('请求回来的结果是', this.treeData[0].children[0])
+    console.log('请求回来的结果是', this.treeData)
     this.list = this.list.concat(this.treeData)
     console.log('展示的list是', JSON.stringify(this.list))
     this.$forceUpdate()

@@ -19,6 +19,7 @@
             </van-field>
             <van-field v-model="item.text" label="文字描述" placeholder="请输入文字" />
             <van-field :value="formatPageListShow(item)" label="跳转页面" placeholder="请选择跳转页面" readonly @click="clickPage(index)" />
+            <van-field :value="formatAuthShow(item.auth || [])" label="权限" placeholder="请选择显示权限" readonly @click="clickAuth(index)" />
             <template #right>
               <van-button square text="删除" type="danger" class="delete-button" @click="delData(index)" />
             </template>
@@ -29,6 +30,8 @@
         </div>
       </div>
     </van-popup>
+    <tree :show="showTree" :list="treeList" text="name" return-type="node" :multiple="true" :check-on-select="true" @result="chooseResult"
+          @on-close="closePage" />
     <!-- <page-list :show="chooseNextPage"
                @choose-page="choosePage"
                @on-close="closeChoosePage" /> -->
@@ -47,7 +50,8 @@
 import _ from 'lodash'
 import pageList from '../pagelist/index123.vue'
 import formUpload from '../upload'
-import { formatPageListShow, formatPageListRes } from '@/mUtils'
+import { formatPageListShow, formatPageListRes, formatAuthShow } from '@/mUtils'
+import { AUTHS_TREE } from '@/mUtils/auth'
 export default {
   components: {
     pageList,
@@ -72,8 +76,11 @@ export default {
       showPopup: false,
       shadowBoxList: [],
       tempIndex: -1,
+      authIndex: -1,
       chooseNextPage: false,
-      jumpPage: ''
+      jumpPage: '',
+      showTree: false,
+      treeList: []
     }
   },
   computed: {
@@ -103,6 +110,26 @@ export default {
   },
   methods: {
     formatPageListShow,
+    formatAuthShow,
+    clickAuth(index) {
+      this.authIndex = index
+      this.showTree = true
+      // this.treeList = formatTreeSelected([AUTHS_TREE])
+      this.treeList = [AUTHS_TREE]
+      console.log('权限树是', this.treeList)
+    },
+    closePage() {
+      this.showTree = false
+    },
+    chooseResult(value) {
+      this.shadowBoxList[this.authIndex].auth = []
+      for (const item of value.data) {
+        this.shadowBoxList[this.authIndex].auth.push({
+          id: item.id,
+          text: item.data.text
+        })
+      }
+    },
     closeChoosePage() {
       this.chooseNextPage = false
     },

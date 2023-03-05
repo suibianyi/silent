@@ -3,6 +3,7 @@
   <div class="addAddEditFormwork">
     <div class="content">
       <div class="content-left">
+        <div class="edit-key" @click="intoEdit()">编辑</div>
         <div class="phone-area">
           <div class="custom-main">
             <div id="main-box" class="module-box" :style="{'transform': `scale(${scale.rateWidth}, ${scale.rateHeight})`}">
@@ -28,7 +29,30 @@
                   <div class="component-box">
                     <div class="title">模板列表</div>
                     <div class="component-list">
-                      <van-swipe-cell v-for="frame in frameList"
+                      <van-cell-group>
+                        <div
+                          v-for="frame in frameList"
+                          :key="frame._id"
+                          class="cell-item"
+                        >
+                          <van-card
+                            :desc="frame.schoolCode"
+                            :title="frame.name + '  ' +frame.role"
+                            :tag="tagInfo(frame)"
+                            thumb="https://img01.yzcdn.cn/vant/ipad.jpeg"
+                            @click="chooseFrame($event, frame)"
+                          >
+                            <template #footer>
+                              <van-button round text="编辑" type="default" class="edit-button" @click="editFrame(frame)" />
+                              <van-button round text="导出" type="default" class="delete-button" @click="exportFrame(frame)" />
+                              <van-button round text="删除" type="default" class="delete-button" @click="delFrame(frame)" />
+                            </template>
+                          </van-card>
+                          <van-switch v-model="frame.inUse" active-color="#8677EC" inactive-color="#B2B2B2" @change="switchChange(frame)" />
+                        </div>
+
+                      </van-cell-group>
+                      <!-- <van-swipe-cell v-for="frame in frameList"
                                       :key="frame._id"
                                       :stop-propagation="true">
                         <van-card
@@ -37,13 +61,9 @@
                           thumb="https://img01.yzcdn.cn/vant/ipad.jpeg"
                           @click="chooseFrame(frame)"
                         />
-                        <template #right>
-                          <van-button square text="编辑" type="info" class="delete-button" @click="editFrame(frame)" />
-                          <van-button square text="删除" type="danger" class="delete-button" @click="delFrame(frame)" />
-                        </template>
-                      </van-swipe-cell>
+                      </van-swipe-cell> -->
                       <div class="add-comp" @click="showAddFram">
-                        <van-icon name="plus" size="50" />
+                        <!-- <van-icon name="plus" size="50" /> -->
                       </div>
                     </div>
                   </div>
@@ -78,11 +98,13 @@
                     :style="{'position':'relative', 'height':'100%'}"
                     @mouseenter="onmouseover(index, item)" @mouseleave="onmouseout(index)"
                   >
-                    <component
-                      :is="item&&item.key"
-                      v-if="item"
-                      :config="item.config"
-                    />
+                    <keep-alive>
+                      <component
+                        :is="item&&item.key"
+                        v-if="item"
+                        :config="item.config"
+                      />
+                    </keep-alive>
                     <div v-if="item&&item.shadeWindow&&item.key=='m-tabbar'&&edit&&!dragFlag" class="edit-bg-fiexd">
                       <div class="edit-button"
                            @click="config(item, index)" />
@@ -97,13 +119,20 @@
                     </div>
                   </div>
                   <div v-if="edit" class="add-comp" @click="showAddComponent=true">
-                    <van-icon name="plus" size="50" />
+                    <!-- <van-icon name="plus" size="50" /> -->
                   </div>
                   <div v-if="edit" class="change-background-color">
                     选择背景颜色
                     <van-radio-group :value="backgroundColor" direction="horizontal" @input="changeBackColor">
                       <van-radio name="#ffffff">白色</van-radio>
                       <van-radio name="#eeeeee">灰色</van-radio>
+                    </van-radio-group>
+                  </div>
+                  <div v-if="edit" class="change-background-color">
+                    是否使用keep-alive
+                    <van-radio-group :value="keepAlive" direction="horizontal" @input="changeKeepAlive">
+                      <van-radio name="true">是</van-radio>
+                      <van-radio name="false">否</van-radio>
                     </van-radio-group>
                   </div>
                   <div v-if="includeTabbar" class="is-tabbar" />
@@ -150,33 +179,34 @@
                 </van-popup>
                 <van-image-preview v-model="showImagePreview" :images="imagePreview" />
                 <van-popup v-model="showAdd" :round="true" :style="{ width: '90%', height: '80%' }">
-                  <div class="form">
-                    新增模板
-                    <van-field
-                      v-model="addModel.name"
-                      name="name"
-                      label="name"
-                      placeholder="请输入模板名称"
-                      :rules="[{ required: true, message: '请输入模板名称' }]"
-                    />
-                    <van-field
-                      v-model="addModel.schoolCode"
-                      name="schoolCode"
-                      label="schoolCode"
-                      placeholder="请输入schoolCode"
-                      :rules="[{ required: true, message: '请输入schoolCode' }]"
-                    />
-                    <van-field
-                      v-model="addModel.role"
-                      name="role"
-                      label="role"
-                      placeholder="请输入role"
-                      :rules="[{ required: true, message: '请输入role' }]"
-                    />
-                    <div style="margin: 16px;">
-                      <van-button round block type="info" native-type="submit" @click="addFram">确定</van-button>
-                    </div>
-                  </div>
+                  <van-tabs v-model="active">
+                    <van-tab title="新增模板">
+                      <div class="form">
+                        <van-field v-model="addModel.name" name="name" label="name" placeholder="请输入模板名称"
+                                   :rules="[{ required: true, message: '请输入模板名称' }]" />
+                        <van-field v-model="addModel.schoolCode" name="schoolCode" label="schoolCode" placeholder="请输入schoolCode"
+                                   :rules="[{ required: true, message: '请输入schoolCode' }]" />
+                        <van-field v-model="addModel.role" name="role" label="role" placeholder="请输入role"
+                                   :rules="[{ required: true, message: '请输入role' }]" />
+                        <div style="margin: 16px;">
+                          <van-button round block type="info" native-type="submit" @click="addFram">确定</van-button>
+                        </div>
+                      </div>
+                    </van-tab>
+                    <van-tab title="导入模板">
+                      <div class="form">
+                        <van-field name="uploader" label="模板上传">
+                          <template #input>
+                            <van-uploader v-model="uploader" accept=".zip" :max-count="1" :before-read="beforeRead" upload-icon="description" />
+                          </template>
+                        </van-field>
+                        <div style="margin: 16px;">
+                          <van-button round block type="info" native-type="submit" @click="importFram">确定</van-button>
+                        </div>
+                      </div>
+                    </van-tab>
+                  </van-tabs>
+
                 </van-popup>
                 <van-popup v-model="showEdit" :round="true" :style="{ width: '90%', height: '80%' }">
                   <div class="form">
@@ -236,15 +266,16 @@
 </template>
 
 <script>
-// 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
-// 例如：import 《组件名称》 from '《组件路径》';
 import Draggable from 'vuedraggable'
+import { find } from 'lodash'
+// import preventBack from 'vue-prevent-browser-back' // 组件内单独引入
 import { getToken } from '@/utils/auth' // get token from cookie
 import {
   getFrameList,
   createFrameList,
   delFrameList,
-  updateFrameList
+  updateFrameList,
+  importFrameList
 } from '@/api/frame'
 const files = require.context('./components', true, /index.vue$/)
 const configs = require.context('./components', true, /config.vue$/)
@@ -276,6 +307,7 @@ export default {
     ...components,
     Draggable
   },
+  // mixins: [preventBack],
   // import引入的组件需要注入到对象中才能使用
   props: {
     fixturesInfo: {
@@ -324,7 +356,10 @@ export default {
       account: '',
       password: '',
       showImagePreview: false,
-      imagePreview: []
+      imagePreview: [],
+      exportUrl: 'api/private/export/fram',
+      uploader: [],
+      active: 0
     }
   },
   computed: {
@@ -334,11 +369,6 @@ export default {
       console.log('缩放比例', this.plate)
       rateWidth = this.innerWidth / this.paintWidth
       rateHeight = this.innerHeight / this.paintHeight
-      // if (rateWidth > rateHeight) {
-      //   rateWidth = rateHeight
-      // } else {
-      //   rateHeight = rateWidth
-      // }
       console.log('缩放比例', this.innerWidth, this.innerHeight)
       console.log('缩放比例', rateWidth, rateHeight)
       return { rateWidth, rateHeight }
@@ -346,6 +376,10 @@ export default {
     backgroundColor() {
       console.log('backgroundColor变了', this.$store.getters.backgroundColor)
       return this.$store.getters.backgroundColor
+    },
+    keepAlive() {
+      console.log('keepAlive变了', this.$store.getters.keepAlive)
+      return this.$store.getters.keepAlive ? 'true' : 'false'
     },
     dialog() {
       console.log('dialog变了', this.$store.getters.dialog)
@@ -387,8 +421,21 @@ export default {
   },
   // 监控data中的数据变化
   watch: {
+    $route: {
+      handler(newVal) {
+        console.log('我发现路由变了', this.$route.params.page)
+        if (this.$store && this.$store.dispatch) {
+          this.$store.dispatch('setMode', 'editor')
+          this.$store.dispatch('setCurrentPage', { page: this.$route.params.page })
+          this.$store.dispatch('loadPageList', { page: this.$store.getters.currentPage })
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   },
   async mounted() {
+    this.$store.dispatch('setMode', 'editor')
     const hasToken = getToken()
     if (hasToken) {
       this.loginStatus = true
@@ -418,6 +465,7 @@ export default {
       console.log('innerWidth', this.innerWidth)
       console.log('innerHeight', this.innerHeight)
     })
+    // this.$store.dispatch('loadPageList', { page: this.$store.getters.currentPage })
   },
   // 方法集合
   methods: {
@@ -435,6 +483,42 @@ export default {
         password: this.password
       })
       this.loginStatus = true
+    },
+    tagInfo(frame) {
+      return frame.inUse ? '使用中' : ''
+    },
+    async switchChange(frame) {
+      console.log('不是吧11', frame, frame.inUse)
+      if (frame.inUse) {
+        this.$dialog.confirm({
+          title: '注意',
+          message: '开启该模板,会关闭同类型的其他模板~'
+        })
+          .then(async() => {
+            await updateFrameList({
+              id: frame._id,
+              name: frame.name,
+              role: frame.role,
+              schoolCode: frame.schoolCode,
+              fram: frame.fram,
+              inUse: frame.inUse
+            })
+            this.frameList = (await getFrameList()).data
+          })
+          .catch(() => {
+            console.log('取消~')
+          })
+      } else {
+        await updateFrameList({
+          id: frame._id,
+          name: frame.name,
+          role: frame.role,
+          schoolCode: frame.schoolCode,
+          fram: frame.fram,
+          inUse: frame.inUse
+        })
+        this.frameList = (await getFrameList()).data
+      }
     },
     confirmDialog(value) {
       console.log('dialog在create', value.func)
@@ -464,7 +548,12 @@ export default {
       if (this.showText === '返回') {
         this.showText = ''
         this.selectCompoent = true
+        this.$store.dispatch('setCurrentPage', { page: 'template' })
       }
+    },
+    intoEdit() {
+      this.edit = true
+      this.showText = '保存'
     },
     gotouchstart() {
       const _this = this
@@ -509,19 +598,54 @@ export default {
       this.showAdd = true
     },
     async addFram() {
+      // 默认不使用
       await createFrameList({
         fram: this.$store.getters.pageList,
         role: this.addModel.role,
         name: this.addModel.name,
-        schoolCode: this.addModel.schoolCode
+        schoolCode: this.addModel.schoolCode,
+        inUse: false
       })
       this.frameList = (await getFrameList()).data
       this.showAdd = false
     },
     async delFrame(frame) {
       console.log('我要删除的fram是', frame)
-      await delFrameList({ id: frame._id })
+      if (frame) {
+        this.$dialog.confirm({
+          title: '注意',
+          message: '该操作不可逆~'
+        })
+          .then(async() => {
+            await delFrameList({ id: frame._id })
+            this.frameList = (await getFrameList()).data
+          })
+          .catch(() => {
+            console.log('取消~')
+          })
+      }
+    },
+    async exportFrame(frame) {
+      console.log('我要导出的fram是', frame)
+      window.open(`${this.exportUrl}?id=${frame._id}`)
       this.frameList = (await getFrameList()).data
+    },
+    async importFram() {
+      console.log('file:', this.uploader[0].content)
+      console.log('我要导入的fram是', this.uploader[0].content)
+      await importFrameList({
+        modelFile: this.uploader[0].content
+      })
+      this.frameList = (await getFrameList()).data
+      this.showAdd = false
+    },
+    beforeRead(file) {
+      console.log('上传模板的type', file.type)
+      // if (file.type !== 'application/x-zip-compressed') {
+      //   this.$toast('请上传zip文件')
+      //   return false
+      // }
+      return true
     },
     editFrame(frame) {
       this.showEdit = true
@@ -538,7 +662,7 @@ export default {
       this.frameList = (await getFrameList()).data
       this.showEdit = false
     },
-    chooseFrame(frame) {
+    chooseFrame(event, frame) {
       this.framModel = {
         _id: frame._id,
         fram: frame.fram,
@@ -546,12 +670,21 @@ export default {
         name: frame.name,
         schoolCode: frame.schoolCode
       }
-      this.selectCompoent = false
-      this.showText = '返回'
-      console.log('设置authFlag')
-      // this.$store.commit('SET_AUTHFLAG', true)
-      this.$store.dispatch('logout')
-      this.$store.dispatch('setPagelist', { pageList: frame.fram, page: 'home' })
+      this.$store.dispatch('setFrameId', frame._id)
+      let path = null
+      if (event.path) {
+        path = event.path
+      } else {
+        path = event.composedPath()
+      }
+      const target = find(path, ele => this.hasClass(ele, 'van-card__header'))
+      if (target) {
+        this.selectCompoent = false
+        this.showText = '返回'
+        // this.$store.commit('SET_AUTHFLAG', true)
+        this.$store.dispatch('logout')
+        this.$store.dispatch('setPagelist', { pageList: frame.fram, page: 'home' })
+      }
     },
     onmouseover(index, item) {
       console.log('移入了', index)
@@ -621,24 +754,65 @@ export default {
       this.$store.dispatch('editPage', { pageListName: this.$store.getters.currentPage, key: 'backgroundColor', value: val })
       this.$store.dispatch('setBackgroundColor', val)
     },
+    changeKeepAlive(val) {
+      this.$store.dispatch('editPage', { pageListName: this.$store.getters.currentPage, key: 'keepAlive', value: val })
+      this.$store.dispatch('setKeepAlive', val)
+    },
     showPicture(val) {
       console.log('我点击了图片')
       this.imagePreview = [val]
       this.showImagePreview = true
+    },
+    chooseResult(val) {
+      if (this.treeType === 'special') {
+        this.request.specialData[this.specialIndex].value = val.data
+      }
+      if (this.treeType === 'edit') {
+        this.formList[this.specialIndex].data = val.data
+      }
+    },
+    chooseSpecial(index, type) {
+      this.specialIndex = index
+      this.treeType = type
+      this.specialTree = this.formatTree(this.$store.getters.storage)
+      this.showSpecialTree = true
+    },
+    closePage() {
+      this.showSpecialTree = false
+    },
+    confirm() {
+      this.$store.dispatch('editComponent', { index: this.configIndex, pageListName: this.$store.getters.currentPage, key: 'request', value: this.request })
+      this.$store.dispatch('editComponent', { index: this.configIndex, pageListName: this.$store.getters.currentPage, key: 'formList', value: this.formList })
+      this.showRequestPopup = false
+      this.$emit('on-close')
+    },
+    actionSheetSelected(value) {
+      if (value.page && value.page !== '') {
+        this.$store.dispatch('setCurrentPage', { page: value.page })
+      }
+      if (value.func && value.func !== '') {
+        console.log('执行func')
+        this.$store.dispatch(`${value.func.method}`, { func: value.func })
+      }
+      if (value.req && value.req !== '') {
+        console.log('执行req')
+        this.$store.dispatch('sendRequest', { request: value.req })
+      }
+    },
+    hasClass(el, cls) {
+      if (!el || !cls) return false
+      if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.')
+      if (el.classList) {
+        return el.classList.contains(cls)
+      } else {
+        return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') > -1
+      }
     }
   }
 }
 </script>
 <style lang='scss' scoped>
 @import "~@/styles/mixin.scss";
-// * {
-//   -webkit-touch-callout: none;
-//   -webkit-user-select: none;
-//   -khtml-user-select: none;
-//   -moz-user-select: none;
-//   -ms-user-select: none;
-//   user-select: none;
-// }
 .addAddEditFormwork {
   .form {
     margin: 30px;
@@ -647,12 +821,19 @@ export default {
     display: flex;
     .add-comp {
       padding: 10px;
-      height: 100px;
+      height: 86px;
       text-align: center;
-      line-height: 100px;
+      line-height: 86px;
       width: 100%;
-      border: solid 1px #b4b8bf;
-      border-radius: 33px;
+      background: no-repeat url('~@/assets/mobile/create/add.png');
+      background-size: contain;
+      // background-color: red;
+      background-position: center bottom;
+      // border: solid 1px #b4b8bf;
+      // border-radius: 33px;
+      i {
+        color: white;
+      }
     }
     .change-background-color {
        padding: 10px;
@@ -665,10 +846,50 @@ export default {
       margin: 0 auto;
       background-image: url('../../../assets/mobile/create/phone_list.png');
       background-repeat: no-repeat;
+      .edit-key {
+        width: 58px;
+        height:30px;
+        margin-top: 55px;
+        // border: 1px red solid;
+        margin-left: 270px;
+        font-size: 15px;
+        background-color: #FFFFFF;
+        border-radius: 30px 0;
+        text-align: center;
+        color:darkgray;
+        line-height: 30px;
+      }
+      // .edit-key:before {
+      //   position: absolute;
+      //   right: -30.5px;
+      //   bottom: 12.5px;
+      //   content: '';
+
+      //   display: inline-block;
+      //   width: 30px;
+      //   background: yellow;
+      //   height: 26px;
+
+      //   border-left: 1px solid #e2e2ea;
+      //   border-bottom: 1px solid #e2e2ea;
+      //   border-bottom-left-radius: 12px 12px;
+      //   z-index: 2;
+      // }
+      // .title:after {
+      //   position: absolute;
+      //   display: inline-block;
+      //   content: '';
+      //   bottom: 0;
+
+      //   right: -15px;
+      //   width: 36px;
+      //   height: 60px;
+      //   background: #ff0000bf;
+      //   z-index: 1;
+      // }
       .phone-area {
         width: 320px;
         height: 556px;
-        margin-top: 85px;
         margin-left: 16px;
         border-width: 1px;
         .custom-main {
@@ -854,11 +1075,19 @@ export default {
       }
     }
     .content-right {
+      .edit-button {
+        border: 1px solid #8677EC;
+        color: #8677EC;
+        height: 100%;
+      }
       .delete-button {
         height: 100%;
+        background-color: #F1F0F0;
       }
       .component-box {
         .title {
+          text-align: center;
+          margin-top: 15px;
           font-size: 20px;
           line-height: 1;
         }
@@ -914,4 +1143,24 @@ export default {
         transform:  translate(0px, 0px) rotate(0deg)
     }
 }
+</style>
+<style>
+  .cell-item {
+    position: relative;
+    margin: 10px 0;
+  }
+  .cell-item .van-switch {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+  }
+  .cell-item .van-button--normal {
+    padding: 6px 15px;
+  }
+  .cell-item .van-card__title {
+    font-size: 14px;
+  }
+  .cell-item .van-card__desc {
+    color: #474747;
+  }
 </style>

@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { map } from 'lodash'
 const files = require.context('../../components', true, /index.vue$/)
 const components = {}
 // const matchReg = /(?<=\/).*?(?=\/)/g
@@ -64,8 +65,7 @@ export default {
       return this.$store.getters.formPage.formList
     }
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     closeForm(index) {
       this.showComp = ''
@@ -83,6 +83,21 @@ export default {
       this.$store.dispatch('setFormList', value)
     },
     onSubmit() {
+      console.log('最新的值', this.$store.getters.formPage.formList)
+      let validate = true
+      map(this.$store.getters.formPage.formList, list => {
+        if (list && list.require) {
+          if (['input', 'output'].includes(list.component)) {
+            validate = !!list.model.value
+          } else {
+            validate = !!list.model.text
+          }
+        }
+      })
+      if (!validate) {
+        this.$Notify({ type: 'warning', message: '必填项未填写' })
+        return
+      }
       this.$store.dispatch('handelFormList')
       this.$store.dispatch('backNav')
     }

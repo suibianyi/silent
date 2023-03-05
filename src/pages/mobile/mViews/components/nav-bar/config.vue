@@ -6,6 +6,18 @@
         <van-field v-model="navBar.navBarTitle" label="中间文字" placeholder="请输入文字" />
         <van-field v-model="navBar.navBarRight.text" label="右边文字" placeholder="请输入文字" />
         <van-field :value="formatPageListShow(navBar.navBarRight)" label="选择功能" placeholder="请选择功能" readonly @click="clickPage()" />
+        文本颜色：
+        <div class="vue-color">
+          <Compact :value="navBar.navBarTextColor" @input="chooseTextColor" />
+        </div>
+        标题颜色：
+        <div class="vue-color">
+          <Compact :value="navBar.navBarTitleColor" @input="chooseTitleColor" />
+        </div>
+        背景颜色：
+        <div class="vue-color">
+          <Compact :value="navBar.navBarBackgroundColor" @input="chooseBackgroundColor" />
+        </div>
         <div style="margin: 16px;">
           <van-button round block type="info" native-type="submit" @click="confirm">确定</van-button>
         </div>
@@ -23,11 +35,14 @@
 </template>
 
 <script>
-import { formatPageListShow, formatPageListRes, formRightText } from '@/mUtils'
+import { formatPageListShow, formatPageListRes } from '@/mUtils'
 import pageList from '../pagelist/index123.vue'
+import { Compact } from 'vue-color'
+
 export default {
   components: {
-    pageList
+    pageList,
+    Compact
   },
   props: {
     show: {
@@ -54,7 +69,10 @@ export default {
           func: {
             method: ''
           }
-        }
+        },
+        navBarBackgroundColor: '#FFFFFF',
+        navBarTextColor: '#73d8ff',
+        navBarTitleColor: '#000000'
       },
       chooseNextPage: false
     }
@@ -75,7 +93,6 @@ export default {
           this.navBar.navBarTitle = this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].navBar.navBarTitle
           if (this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].navBar.navBarRight) {
             this.navBar.navBarRight = this.$store.getters.pageList[this.$store.getters.currentPage].componentList[newVal].navBar.navBarRight
-            this.formRightText()
           }
         }
       },
@@ -86,9 +103,20 @@ export default {
   mounted() {
     console.log('show', this.show)
   },
-  formRightText,
   methods: {
     formatPageListShow,
+    chooseBackgroundColor(value) {
+      console.log('选择颜色的结果是', value)
+      this.navBar.navBarBackgroundColor = value.hex
+    },
+    chooseTitleColor(value) {
+      console.log('选择颜色的结果是', value)
+      this.navBar.navBarTitleColor = value.hex
+    },
+    chooseTextColor(value) {
+      console.log('选择颜色的结果是', value)
+      this.navBar.navBarTextColor = value.hex
+    },
     chooseVal(val) {
       this.navBar.navBarRight = formatPageListRes(this.navBar.navBarRight, val)
     },
@@ -120,5 +148,8 @@ export default {
        height: 100%;
       }
     }
+}
+.vue-color {
+  padding: 10px 16px;
 }
 </style>

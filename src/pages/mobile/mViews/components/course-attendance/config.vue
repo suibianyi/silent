@@ -51,6 +51,9 @@ export default {
         }, {
           value: 'class-course-attendance',
           name: '课程考勤'
+        }, {
+          value: 'user-course-attendance',
+          name: '家长学生查看课程考勤'
         }]
       },
       chooseNextPage: false

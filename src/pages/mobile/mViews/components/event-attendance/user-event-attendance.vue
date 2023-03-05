@@ -1,8 +1,9 @@
 <template>
   <div class="bg">
+    <van-nav-bar title="考勤详情" left-text="返回" left-arrow @click-left="onClickLeft" />
     <div :style="search.type==='day'?'':'display:none'" class="time">
       <div class="time-select">
-        <van-image style="height: 40p x;width: 40px;" :src="adminAttendanceClassImages.left" @click="timeSubtract()" />
+        <van-image style="height: 40px;width: 40px;" :src="adminAttendanceClassImages.left" @click="timeSubtract()" />
         <div v-show="searchDayTime===''" @click="calendarShow=true">
           {{ year }}年{{ month }}月{{ day }}日
         </div>
@@ -28,12 +29,12 @@
                     <div style=";margin-top: -10px;">
                       {{ item.eventName }}
                     </div>
-                    <div style="margin-top: -20px;font-weight:normal;font-size:20px;">
+                    <div style="margin-top: -8px;font-weight:normal;font-size:16px;">
                       {{ item.beginTime }}-{{ item.endTime }}
                     </div>
                   </div>
                   <div class="album-right">
-                    <div style="color:#DA532C;font-size:32px;margin-top: 15px;">
+                    <div style="color:#DA532C;font-size:32px;margin-top: 7px;">
                       <div v-if="item.attendStatus=='absent' && item.attendanceStatus==2">
                         缺卡
                       </div>
@@ -118,8 +119,8 @@ export default { // 使用mixin (在main.js注册全局组件)
     // 初始化时间
     this.initTime()
     this.search.schoolCode = this.$store.getters.storage.schoolCode
-    this.search.personNo = this.$store.getters.storage.userInfo.personNo
-    // this.search.basicPersonId = this.$store.state.child.basicPersonId
+    // this.search.personNo = this.$store.getters.storage.userInfo.personNo
+    this.search.basicPersonId = this.$store.getters.storage.userChild.basicPersonId || this.$store.getters.storage.userInfo.basicPersonId
     console.log('grade的search是', this.search, this.$store.getters.storage)
   },
   // 方法集合
@@ -269,7 +270,7 @@ export default { // 使用mixin (在main.js注册全局组件)
 		min-height: 100%;
 		background-color: #EEEEEE;
 		.content {
-			padding: 40px;
+			padding: 20px;
 			display: flex;
 			justify-content: space-between;
 			flex-wrap: wrap;
@@ -279,11 +280,11 @@ export default { // 使用mixin (在main.js注册全局组件)
 				padding: 20px;
 			}
 			.album-content {
-				height: 100px;
+				height: 60px;
 				width: 100%;
-				font-weight: bold;
-				line-height: 70px;
-				font-size: 30px;
+				font-weight: 400;
+				line-height: 45px;
+				font-size: 25px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
@@ -298,18 +299,17 @@ export default { // 使用mixin (在main.js注册全局组件)
 			}
 		}
 		.time{
-			height: 120px;
+			height: 60px;
 			background-color: #FFFFFF;
 			display: flex;
 			color: #000000;
 			justify-content: center;
 			align-items: center;
-			margin-top: 10px;
-			font-weight: 700;
-			font-size: 32px;
+			font-weight: 400;
+			font-size: 26px;
 			border-bottom: 1px #EEEEEE solid;
 			.time-select{
-				padding: 0 60px ;
+				padding: 0 10px ;
 				display: flex;
 				flex: 1;
 				height: 100%;

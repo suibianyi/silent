@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { judgeAuth } from '@/mUtils'
 export default {
   data() {
     return {
@@ -14,7 +15,13 @@ export default {
   },
   computed: {
     gridList() {
-      return this.$store.getters.gridList
+      return this.$store.getters.gridList.filter((item) => {
+        if (item.auth && item.auth.length > 0) {
+          console.log('判断权限的结果是', judgeAuth(item.auth, this.$store.getters.storage.auths))
+          return judgeAuth(item.auth, this.$store.getters.storage.auths)
+        }
+        return true
+      })
     },
     gridColumnNum() {
       return this.$store.getters.gridColumnNum

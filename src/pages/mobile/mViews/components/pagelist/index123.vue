@@ -4,14 +4,24 @@
       <div class="popup-content">
         <van-tabs v-model="active" sticky>
           <van-tab title="跳转页面">
-            <van-grid :column-num="2" :border="false">
-              <van-grid-item v-for="(page, pageIndex) in pageLists"
-                             :key="pageIndex">
-                <div>
-                  {{ pageIndex }}
+            <van-grid
+              :column-num="2"
+              :border="false"
+            >
+              <van-grid-item
+                v-for="page in pageLists"
+                :key="page.key"
+              >
+                <div
+                  class="page-name"
+                  :contenteditable="!defaultKeyWord.includes(page.key)"
+                  @blur="handlerBlur($event, page.key)"
+                  @input="handlerInput($event, page.key)"
+                >
+                  <span><b>{{ page.key }}</b></span>
                 </div>
                 <div class="content">
-                  <div class="phone-area-page" @click.stop="choosePage(pageIndex)">
+                  <div class="phone-area-page" @click.stop="choosePage(page.key)">
                     <div class="custom-main">
                       <div id="main-box" class="module-box" :style="{'transform': `scale(${scale.rateWidth}, ${scale.rateHeight})`}">
                         <div
@@ -21,11 +31,10 @@
                             'width': `${paintWidth}px`,
                             'height': `${paintHeight}px`,
                             'overflow-y': 'scroll',
-                            '-moz-user-select': 'none',
-                            '-webkit-user-select': 'none'}"
+                            'user-select': 'none'}"
                         >
                           <div
-                            v-for="(item, index) in page.componentList"
+                            v-for="(item, index) in page[page.key].componentList"
                             :key="index"
                             :style="{'position':'relative'}"
                           >
@@ -41,7 +50,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="home-key" @click="clickHomeKey(pageIndex)"> 删除</div>
+                  <div class="home-key" @click="clickHomeKey(page.key)"> 删除</div>
                 </div>
               </van-grid-item>
             </van-grid>
@@ -153,6 +162,9 @@
 
 import _ from 'lodash'
 import tree from '../tree/index123.vue'
+import {
+  mRequest
+} from '@/api/request'
 import { splitTreeRes, formatTree } from '@/mUtils'
 const files = require.context('../../components', true, /index.vue$/)
 const components = {}
@@ -237,7 +249,12 @@ export default {
       specialTree: [],
       treeMode: '',
       delPageShow: false,
-      delPageIndex: ''
+      delPageIndex: '',
+      editContent: '',
+      editArray: [],
+      isInput: false,
+      preValue: '',
+      defaultKeyWord: ['home', '添加页面']
     }
   },
   computed: {
@@ -257,10 +274,22 @@ export default {
       return { rateWidth, rateHeight }
     },
     pageLists() {
-      const obj = JSON.parse(JSON.stringify(_.cloneDeep(this.$store.getters.pageList)))
-      const returnObj = _.assign({ '添加页面': { componentList: [] }}, obj)
+      const returnObj = JSON.parse(JSON.stringify(_.cloneDeep(this.$store.getters.pageList)))
       console.log('pagelist选择页面发现pagelist发生了改变', returnObj)
-      return returnObj
+      const homeComponent = returnObj.home
+      const result = []
+      for (const key in returnObj) {
+        if (returnObj.hasOwnProperty(key) && key !== 'home') {
+          if (!returnObj[key].componentList) {
+            returnObj[key].componentList = []
+          }
+          result.push({ [key]: returnObj[key], len: returnObj[key].componentList.length, key })
+        }
+      }
+      result.sort((a, b) => b.len - a.len)
+      result.unshift({ home: homeComponent, key: 'home' })
+      result.unshift({ '添加页面': { componentList: [] }, key: '添加页面' })
+      return result
     },
     includeTabbar() {
       const config = this.$store.getters.pageList[this.$store.getters.currentPage]
@@ -302,15 +331,16 @@ export default {
     }
   },
   mounted() {
-    console.log('我要开始赋值啦', document.getElementsByClassName('phone-area-page'))
-    this.$nextTick(() => {
-      if (document.getElementsByClassName('phone-area-page')[0]) {
-        this.innerWidth = document.getElementsByClassName('phone-area-page')[0].clientWidth
-        this.innerHeight = document.getElementsByClassName('phone-area-page')[0].clientHeight
-        console.log('innerWidth', this.innerWidth)
-        console.log('innerHeight', this.innerHeight)
-      }
-    })
+    this.handlerInput = _.debounce(this.handleInput, 500)
+    // console.log('我要开始赋值啦', document.getElementsByClassName('phone-area-page'))
+    // this.$nextTick(() => {
+    //   if (document.getElementsByClassName('phone-area-page')[0]) {
+    //     this.innerWidth = document.getElementsByClassName('phone-area-page')[0].clientWidth
+    //     this.innerHeight = document.getElementsByClassName('phone-area-page')[0].clientHeight
+    //     console.log('innerWidth', this.innerWidth)
+    //     console.log('innerHeight', this.innerHeight)
+    //   }
+    // })
   },
   beforeDestroy() {
   },
@@ -414,6 +444,116 @@ export default {
       console.log('我点击了删除', page)
       this.delPageShow = true
       this.delPageIndex = page
+    },
+    handlerBlur(event, name) {
+      console.log('失去焦点1', name, this.editContent)
+      const { editContent } = this
+
+      if (!this.isInput && !_.trim(editContent)) {
+        event.target.innerHTML = '<span><b>' + name + '</b></span>'
+        return
+      }
+      if (!_.trim(editContent)) {
+        this.notifyFn({ type: 'warning', message: '不允许使用空字符串~' })
+        event.target.innerHTML = '<span><b>' + this.preValue + '</b></span>'
+        return
+      }
+      if (_.trim(name) === editContent) return
+      const pageLists = this.$store.getters.pageList
+      if (this.defaultKeyWord.includes(editContent)) {
+        this.notifyFn({ type: 'warning', message: '不允许使用关键字命名~' })
+        return
+      }
+      const keysArray = _.keys(pageLists)
+      console.log('存在的keys', keysArray)
+      if (keysArray.includes(editContent)) {
+        this.notifyFn({ type: 'warning', message: '命名存在重复~' })
+        return
+      }
+      this.isInput = false
+      const pageInfo = JSON.parse(JSON.stringify(_.cloneDeep(pageLists[name])))
+      this.$store.commit('EDIT_PAGE_NAME', { oldName: name, newName: editContent, value: pageInfo })
+    },
+    handleInput(event, name) {
+      console.log('输入拉', event, name)
+      if (_.trim(name) === _.trim(event.target.innerText)) return
+      this.preValue = name
+      this.isInput = true
+      this.editContent = _.trim(event.target.innerText)
+    },
+    async query(val) {
+      this.choose = val
+      const sendata = {}
+      const {
+        specialData,
+        data,
+        url,
+        method
+      } = this.request
+      for (const item of specialData) {
+        sendata[item.key] = this.$store.getters.storage[item.value]
+        console.log('让我来看看这里面有什么', this.$store.getters.storage)
+      }
+      for (const item of data) {
+        sendata[item.key] = JSON.parse(item.value)
+      }
+      const res = await mRequest({
+        url: url,
+        method: method,
+        data: sendata
+      })
+      console.log('请求回来的结果是', res)
+      console.log('格式化的结果是', this.formatTree(res))
+      this.treeList = this.formatTree(res)
+      this.treeMode = 'normal'
+      this.showTree = true
+    },
+    switchPic(value) {
+      if (value.page) {
+        this.$store.commit('SET_REFERENCE', value)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
+        this.$store.dispatch('setCurrentPage', { page: value.page })
+        // this.$store.commit(`${this.$store.getters.dynamicJumpDate}`, value)
+      } else if (this.$store.getters.dynamic.dynamicJumpPage.page !== '') {
+        this.$store.commit('SET_REFERENCE', value)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
+        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic.dynamicJumpPage.page })
+        // this.$store.commit(`${this.$store.getters.dynamic.dynamicJumpDate}`, value)
+      }
+    },
+    notifyFn(options) {
+      this.$Notify({ type: options.type, message: options.message })
+    },
+    actionSheetSelected(value) {
+      if (value.page && value.page !== '') {
+        this.$store.dispatch('setCurrentPage', { page: value.page })
+      }
+      if (value.func && value.func !== '') {
+        console.log('执行func')
+        this.$store.dispatch(`${value.func.method}`, { func: value.func })
+      }
+      if (value.req && value.req !== '') {
+        console.log('执行req')
+        this.$store.dispatch('sendRequest', { request: value.req })
+      }
+    },
+    hasClass(el, cls) {
+      if (!el || !cls) return false
+      if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.')
+      if (el.classList) {
+        return el.classList.contains(cls)
+      } else {
+        return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') > -1
+      }
+    },
+    clickNotice() {
+      const goto = this.$store.getters.noticeClick
+      if (goto.page && goto.page !== '') {
+        this.$store.dispatch('setCurrentPage', { page: goto.page })
+      }
+      this.$emit('input', this.dialog)
+      this.$emit('confirm', this.dialog)
+      this.$emit('on-close')
     }
   }
 }
@@ -430,6 +570,12 @@ export default {
   overflow-x: hidden
   .popup-content {
     margin-top: 30px
+  }
+  .page-name {
+    width: 100%
+    height: 35px
+    text-align: center
+    line-height: 35px
   }
   .form {
     margin: 20px;

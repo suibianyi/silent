@@ -1,6 +1,6 @@
 <template>
   <div class="bg">
-    <van-nav-bar title="考情详情" left-text="返回" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="考勤详情" left-text="返回" left-arrow @click-left="onClickLeft" />
     <div class="header">
       <div class="header-image">
         <van-image style="width: 100%;height: 80%;" :src="background" />

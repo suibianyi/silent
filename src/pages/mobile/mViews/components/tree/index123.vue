@@ -8,7 +8,11 @@
           :options="options"
           @node:selected="onSelected"
           @node:checked="onChecked"
+          @node:unchecked="onUnChecked"
         />
+      </div>
+      <div style="margin: 16px;">
+        <van-button round block type="info" native-type="submit" @click="onSubmit">提交</van-button>
       </div>
     </van-popup>
   </div>
@@ -59,7 +63,8 @@ export default {
         propertyNames: {
           text: this.text
         }
-      }
+      },
+      chooseResult: []
     }
   },
   computed: {
@@ -105,20 +110,43 @@ export default {
       if (this.returnType === 'path') {
         console.log('我点击了onSelected', this.formatTreeRes(node))
         this.$emit('result', { data: this.formatTreeRes(node) })
+        this.$emit('on-close')
       } else if (this.returnType === 'node') {
         this.$emit('result', { data: node })
       }
-      // this.$emit('on-close')
     },
     onChecked(node) {
       console.log('我点击了onChecked', node)
       if (this.returnType === 'path') {
         console.log('我点击了onChecked', this.formatTreeRes(node))
         this.$emit('result', { data: this.formatTreeRes(node) })
+        this.$emit('on-close')
       } else if (this.returnType === 'node') {
-        this.$emit('result', { data: node })
+        this.chooseResult.push(node)
       }
-      // this.$emit('on-close')
+    },
+    onUnChecked(node) {
+      console.log('我点击了onUnChecked', node)
+      if (this.returnType === 'node') {
+        this.chooseResult = this.chooseResult.filter((item) => {
+          return item.id !== node.id
+        })
+      }
+    },
+    // getcheckTrue(arr) {
+    //   arr.forEach((el) => {
+    //     if (el.states.selected === true) {
+    //       this.chooseResult.push(el)
+    //     }
+    //     this.getcheckTrue(el.children || [])
+    //   })
+    // },
+    onSubmit() {
+      console.log('我们来看看', this.chooseResult)
+      if (this.returnType === 'node') {
+        this.$emit('result', { data: this.chooseResult })
+        this.$emit('on-close')
+      }
     }
   }
 

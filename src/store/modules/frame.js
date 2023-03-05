@@ -1,6 +1,9 @@
 import Vue from 'vue'
+import { assign } from 'lodash'
+import context from '../../pages/mobile/main'
 import { getToken, removeToken } from '@/utils/auth' // get token from cookie
 import storage from './storage'
+import setting from './settings'
 
 const frame = {
   state: {
@@ -760,9 +763,7 @@ const frame = {
     },
     DEL_PAGE: (state, data) => {
       console.log('delpage', data)
-      // delete state.pageList[data]
       Vue.delete(state.pageList, data)
-      // Vue.set(state.pageList, data.pageListName, { componentList: [] })
       console.log('删除后的nowpage', state.pageList)
     },
     ADD_PAGE: (state, data) => {
@@ -775,6 +776,19 @@ const frame = {
       Vue.set(state.pageList[data.pageListName].componentList[data.index], data.key, data.value)
       console.log('nowpage', state.pageList)
     },
+    // 编辑requestData的东西
+    EDIT_REQUESTDATA: (state, data) => {
+      console.log('edit_requestData', data)
+      if (state.pageList[data.pageListName].requestData && state.pageList[data.pageListName].requestData[data.key]) {
+        Vue.set(state.pageList[data.pageListName].requestData, data.key, data.value)
+      } else if (state.pageList[data.pageListName].requestData) {
+        Vue.set(state.pageList[data.pageListName].requestData, data.key, data.value)
+      } else if (!state.pageList[data.pageListName].requestData) {
+        state.pageList[data.pageListName].requestData = {}
+        Vue.set(state.pageList[data.pageListName].requestData, data.key, data.value)
+      }
+      console.log('now——requestData', state.pageList)
+    },
     EDIT_FORM_COMPONENT: (state, data) => {
       console.log('edit_form_component', data)
       Vue.set(state.pageList[data.pageListName].componentList[data.configIndex].formList[data.editIndex], data.key, data.value)
@@ -784,18 +798,33 @@ const frame = {
       console.log('edit_page', data)
       Vue.set(state.pageList[data.pageListName], data.key, data.value)
       console.log('nowpage', state.pageList)
+    },
+    EDIT_PAGE_NAME: (state, data) => {
+      console.log('edit_page_name', data)
+      Vue.delete(state.pageList, data.oldName)
+      Vue.set(state.pageList, data.newName, data.value)
     }
   },
 
   actions: {
     // 切换页面使用
     setCurrentPage: async({ commit, state, dispatch }, data) => {
+      console.log('router推入页面切换', data.page, setting.state.mode)
+      commit('SET_CURRENTPAGE', data.page)
+      if (setting.state.mode === 'user') {
+        context.$router.push('/mobile/' + data.page)
+      } else {
+        context.$router.push('/whoisyourdaddy/' + data.page)
+      }
+    },
+    // 加载页面
+    loadPageList: async({ commit, state, dispatch }, data) => {
       const hasToken = getToken()
       if (hasToken) {
         if (data.page === 'login') {
           data.page = 'home'
         }
-        console.log('storage', storage.state)
+        console.log('storage', storage.state.userInfo, JSON.stringify(storage.state.userInfo))
         if (JSON.stringify(storage.state.userInfo) === '{}') {
           await dispatch('getInfo')
           // todo
@@ -819,6 +848,10 @@ const frame = {
         commit('PUSH_PAGECHANGE', data.page)
       }
       console.log('开始切换页面123456798', state)
+      if (state.pageList[data.page] && state.pageList[data.page].requestData) {
+        console.log('开始推入请求', state.pageList[data.page].requestData)
+        dispatch('addRequest', state.pageList[data.page].requestData)
+      }
       if (state.pageList[data.page] && state.pageList[data.page].componentList && state.pageList[data.page].componentList.length) {
         for (const item of state.pageList[data.page].componentList) {
           console.log('开始切换页面')
@@ -830,6 +863,11 @@ const frame = {
         dispatch('setBackgroundColor', state.pageList[data.page].backgroundColor)
       } else {
         dispatch('setBackgroundColor', '#ffffff')
+      }
+      if (state.pageList[data.page] && state.pageList[data.page].keepAlive) {
+        dispatch('setKeepAlive', state.pageList[data.page].keepAlive)
+      } else {
+        dispatch('setKeepAlive', false)
       }
     },
     // 选择模板的时候注入模板列表
@@ -862,6 +900,10 @@ const frame = {
     // 编辑组件
     editComponent: ({ commit }, data) => {
       commit('EDIT_COMPONENT', data)
+    },
+    // 编辑requestData的东西
+    editRequestData: ({ commit }, data) => {
+      commit('EDIT_REQUESTDATA', data)
     },
     // 编辑表单组件
     editFormComponent: ({ commit }, data) => {

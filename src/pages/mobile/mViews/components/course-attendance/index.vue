@@ -11,6 +11,7 @@ import courseAttendanceCourse from './course-attendance-course'
 import courseAttendanceDetail from './course-attendance-detail'
 import classCourseAttendance from './class-course-attendance'
 import classCourseAttendanceDetail from './class-course-attendance-detail'
+import userCourseAttendance from './user-course-attendance'
 
 export default {
   components: {
@@ -19,7 +20,8 @@ export default {
     courseAttendanceCourse,
     courseAttendanceDetail,
     classCourseAttendance,
-    classCourseAttendanceDetail
+    classCourseAttendanceDetail,
+    userCourseAttendance
   },
   data() {
     return {

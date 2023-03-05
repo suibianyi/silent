@@ -8,13 +8,6 @@
     >
       <div class="content">
         <div v-for="(item,index) in albums.albumList" :key="index" style="width: 45%;margin-bottom: 40rpx;">
-          <!-- <div class="album-con"
-               @touchstart="gotouchstart1(index)"
-               @touchmove="gotouchmove1()"
-               @touchend="gotouchend1(item)"
-               @onmousedown="gotouchstart1(index)"
-               @onmouseover="gotouchmove1()"
-               @onmouseup="gotouchend1(item)"> -->
           <div class="album-con" @click="switchPic(item)">
             <div class="album-image">
               <van-image
@@ -59,6 +52,7 @@ export default {
       console.log('albumsList是', this.$store.getters.album)
       if (this.$store.getters.album.albumList && this.$store.getters.album.albumList[0]) {
         this.$store.commit('SET_REFERENCE', this.$store.getters.album.albumList[0])
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: this.$store.getters.album.albumList[0] })
       }
       return this.$store.getters.album
     }
@@ -95,6 +89,7 @@ export default {
     async deletePhoto(value) {
       console.log('点击了删除')
       this.$store.commit('SET_REFERENCE', value)
+      this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
       if (this.$store.getters.album.del && this.$store.getters.album.del.page && this.$store.getters.album.del.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.album.del.page })
       }
@@ -110,6 +105,7 @@ export default {
     editPhoto(value) {
       console.log('点击了编辑', this.$store.getters.album.edit)
       this.$store.commit('SET_REFERENCE', value)
+      this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
       if (this.$store.getters.album.edit && this.$store.getters.album.edit.page && this.$store.getters.album.edit.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.album.edit.page })
       }
@@ -124,10 +120,12 @@ export default {
     switchPic(value) {
       if (value.page) {
         this.$store.commit('SET_REFERENCE', value)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.dispatch('setCurrentPage', { page: value.page })
         // this.$store.commit(`${this.$store.getters.dynamicJumpDate}`, value)
       } else if (this.$store.getters.dynamicJumpPage !== '') {
         this.$store.commit('SET_REFERENCE', value)
+        this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.album.jumpPage })
         // this.$store.commit(`${this.$store.getters.dynamicJumpDate}`, value)
       }

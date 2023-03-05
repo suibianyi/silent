@@ -1,6 +1,6 @@
 <template>
   <div class="bg">
-    <van-nav-bar title="考情详情" left-text="返回" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar title="考勤详情" left-text="返回" left-arrow @click-left="onClickLeft" />
     <div :style="search.type==='day'?'':'display:none'" class="time">
       <div class="time-select">
         <van-image style="height: 40px;width: 40px;" :src="adminAttendanceClassImages.left" @click="timeSubtract()" />
@@ -26,7 +26,7 @@
               <div class="album-content">
                 <div class="album-content-flex">
                   <div class="album-left">
-                    <div style=";margin-top: -10px;">
+                    <div style="width:275px;margin-top: -10px;text-overflow: ellipsis;overflow: hidden;">
                       {{ item.courseName }}({{ item.className }})
                     </div>
                     <div style="margin-top: -8px;font-weight:normal;font-size:16px;">
@@ -235,6 +235,7 @@ export default { // 使用mixin (在main.js注册全局组件)
     },
     click(item) {
       this.$store.commit('SET_REFERENCE', item)
+      this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: item })
       this.$store.commit('SET_ATTENDANCEPAGE', 'class-course-attendance-detail')
     //   const detailInfo = JSON.stringify(item)
     //   uni.navigateTo({

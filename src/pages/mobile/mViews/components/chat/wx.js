@@ -3,7 +3,7 @@ import {
   mRequest
 } from '@/api/request'
 
-export async function getWxSdk() {
+export async function getWxSdk(schoolCode) {
   const { wx } = window
   const path = window.location.pathname
   const locationHref = window.location.href
@@ -12,7 +12,8 @@ export async function getWxSdk() {
   const data = {
     locationHref,
     path,
-    origin: originPath
+    origin: originPath,
+    schoolCode
   }
   const res = await mRequest({
     url: `/wx/config/path`,

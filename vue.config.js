@@ -48,6 +48,7 @@ module.exports = {
         // protocol: 'https:',
         // target: `https://muse-fzez-test.platoedu.net`, // 填写mps地址
         target: `http://localhost:8800`,
+        // target:'http://10.30.18.103:8800',
         changeOrigin: true,
         autoRewrite: true,
         // headers: {
