@@ -4,6 +4,7 @@
     <div v-for="(item, index) in components" :key="index" class="component-item">
       <component :is="item&&item.key"
                  v-if="item"
+                 :id="item.id"
                  :config="item.config" />
     </div>
     <div v-if="includeTabbar" class="is-tabbar" />

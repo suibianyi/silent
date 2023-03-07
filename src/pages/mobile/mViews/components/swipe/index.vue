@@ -10,16 +10,26 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }
   },
   computed: {
     swipeList() {
-      return this.$store.getters.swipeList
+      const temp = this.$store.getters.swipe[this.id]
+      console.log('这里拿到的swipe', temp ? temp.swipeList : this.$store.getters.swipe.default.swipeList)
+      return temp ? temp.swipeList : this.$store.getters.swipe.default.swipeList
     },
     swipeAutoplay() {
-      return this.$store.getters.swipeAutoplay
+      const temp = this.$store.getters.swipe[this.id]
+      console.log('这里拿到的swipeAutoplay', temp ? temp.swipeAutoplay : this.$store.getters.swipe.default.swipeAutoplay)
+      return temp ? temp.swipeAutoplay : this.$store.getters.swipe.default.swipeAutoplay
     }
   },
   mounted() {

@@ -9,13 +9,20 @@
 <script>
 import { judgeAuth } from '@/mUtils'
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }
   },
   computed: {
     gridList() {
-      return this.$store.getters.gridList.filter((item) => {
+      const temp = this.$store.getters.grid[this.id] || this.$store.getters.grid.default
+      return temp.gridList.filter((item) => {
         if (item.auth && item.auth.length > 0) {
           console.log('判断权限的结果是', judgeAuth(item.auth, this.$store.getters.storage.auths))
           return judgeAuth(item.auth, this.$store.getters.storage.auths)
@@ -24,7 +31,9 @@ export default {
       })
     },
     gridColumnNum() {
-      return this.$store.getters.gridColumnNum
+      const temp = this.$store.getters.grid[this.id]
+      console.log('grid123456789', this.$store.getters.grid.default)
+      return temp ? temp.gridColumnNum : this.$store.getters.grid.default.gridColumnNum
     }
   },
   mounted() {

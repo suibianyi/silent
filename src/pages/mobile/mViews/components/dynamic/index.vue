@@ -17,6 +17,12 @@
 
 const components = {}
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
 
@@ -24,15 +30,15 @@ export default {
   },
   computed: {
     dynamic() {
-      console.log('dynamic是', this.$store.getters.dynamic)
-      return this.$store.getters.dynamic
+      console.log('这里拿到的dynamic', this.$store.getters.dynamic[this.id] || this.$store.getters.dynamic.default)
+      return this.$store.getters.dynamic[this.id] || this.$store.getters.dynamic.default
     }
   },
   mounted() {
   },
   methods: {
     onLoad() {
-      this.$store.dispatch('loadDynamic')
+      this.$store.dispatch('loadDynamic', { id: this.id })
     },
     closePage() {
       this.showSpecialTree = false
@@ -89,10 +95,10 @@ export default {
         this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.commit('SET_REFERENCE', value)
         this.$store.dispatch('setCurrentPage', { page: value.page })
-      } else if (this.$store.getters.dynamic.dynamicJumpPage.page !== '') {
+      } else if (this.$store.getters.dynamic[this.id].dynamicJumpPage.page !== '') {
         this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.commit('SET_REFERENCE', value)
-        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic.dynamicJumpPage.page })
+        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic[this.id].dynamicJumpPage.page })
       }
     }
   }

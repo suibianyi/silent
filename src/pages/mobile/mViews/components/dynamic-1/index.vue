@@ -35,32 +35,36 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {}
   },
   computed: {
     dynamic() {
-      console.log('dynamic-1是', this.$store.getters.dynamic)
-      return this.$store.getters.dynamic
+      console.log('这里拿到的dynamic', this.$store.getters.dynamic[this.id] || this.$store.getters.dynamic.default)
+      return this.$store.getters.dynamic[this.id] || this.$store.getters.dynamic.default
     }
   },
   mounted() {
   },
   methods: {
     onLoad() {
-      this.$store.dispatch('loadDynamic')
+      this.$store.dispatch('loadDynamic', { id: this.id })
     },
     switchPic(value) {
       if (value.page) {
-        this.$store.commit('SET_REFERENCE', value)
         this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
+        this.$store.commit('SET_REFERENCE', value)
         this.$store.dispatch('setCurrentPage', { page: value.page })
-        // this.$store.commit(`${this.$store.getters.dynamicJumpDate}`, value)
-      } else if (this.$store.getters.dynamic.dynamicJumpPage.page !== '') {
-        this.$store.commit('SET_REFERENCE', value)
+      } else if (this.$store.getters.dynamic[this.id].dynamicJumpPage.page !== '') {
         this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
-        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic.dynamicJumpPage.page })
-        // this.$store.commit(`${this.$store.getters.dynamic.dynamicJumpDate}`, value)
+        this.$store.commit('SET_REFERENCE', value)
+        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic[this.id].dynamicJumpPage.page })
       }
     }
   }

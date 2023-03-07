@@ -17,6 +17,12 @@
 import _ from 'lodash'
 import { judgeAuth } from '@/mUtils'
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       width: 0
@@ -26,7 +32,14 @@ export default {
     shadowBoxList() {
       if (this.width) {
         const num = parseInt((this.width - 20) / 100)
-        const cloneShadowBoxList = _.cloneDeep(this.$store.getters.shadowBoxList)
+        let cloneShadowBoxList = _.cloneDeep(this.$store.getters.shadowBoxList[this.id] || this.$store.getters.shadowBoxList.default)
+        cloneShadowBoxList = cloneShadowBoxList.filter((item) => {
+          if (item.auth && item.auth.length > 0) {
+            console.log('判断权限的结果是', judgeAuth(item.auth, this.$store.getters.storage.auths))
+            return judgeAuth(item.auth, this.$store.getters.storage.auths)
+          }
+          return true
+        })
         if (num > 0) {
           const addNum = Math.ceil(cloneShadowBoxList.length % num)
           console.log('一行的数目和多出来的数目', num, addNum)
@@ -40,7 +53,8 @@ export default {
           return cloneShadowBoxList
         }
       }
-      return this.$store.getters.shadowBoxList.filter((item) => {
+      const cloneShadowBoxList = _.cloneDeep(this.$store.getters.shadowBoxList[this.id] || this.$store.getters.shadowBoxList.default)
+      return cloneShadowBoxList.filter((item) => {
         if (item.auth && item.auth.length > 0) {
           console.log('判断权限的结果是', judgeAuth(item.auth, this.$store.getters.storage.auths))
           return judgeAuth(item.auth, this.$store.getters.storage.auths)

@@ -219,4 +219,15 @@ export function judgeAuth(arr, userAuth) {
 
 export function handlerAvtion(action) {
   console.log('收到的操作是', action)
+  if (action && action.page && action.page !== '') {
+    this.$store.dispatch('setCurrentPage', { page: action.page })
+  }
+  if (action && action.func && action.func !== '') {
+    console.log('执行func')
+    this.$store.dispatch(`${action.func.method}`, { func: action.func })
+  }
+  if (action && action.request && action.request !== '') {
+    console.log('执行request')
+    this.$store.dispatch(`${action.func.method}`, { func: action.func })
+  }
 }

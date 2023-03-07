@@ -1,4 +1,4 @@
-
+import Vue from 'vue'
 import {
   mRequest
 } from '@/api/request'
@@ -9,20 +9,31 @@ import {
 import storage from './storage'
 const swipe = {
   state: {
-    swipeList: [{
-      imageUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
-      page: 'home'
-    }, {
-      imageUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
-      page: ''
-    }],
-    swipeAutoplay: 3000
+    swipe: {
+      default: {
+        swipeList: [{
+          imageUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+          page: 'home'
+        }, {
+          imageUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
+          page: ''
+        }],
+        swipeAutoplay: 3000
+      }
+    }
   },
   mutations: {
     SET_SWIPE: (state, data) => {
-      console.log('currentPage', data)
-      state.swipeList = data.swipeList
-      state.swipeAutoplay = data.swipeAutoplay
+      console.log('swip', data)
+      if (data.id && data.swipe) {
+        if (state.swipe[data.id]) {
+          Object.assign(state.swipe[data.id], data.swipe)
+          console.log('执行swip123456', state.swipe)
+        } else {
+          Vue.set(state.swipe, data.id, data.swipe)
+          console.log('执行swip', state.swipe)
+        }
+      }
     }
   },
 
@@ -51,22 +62,7 @@ const swipe = {
         }]
       }
       const resultList = formatResponseArray(formatData)
-      // const spliceRes = data.response.swipeList.split('.')
-      // let tempList = res
-      // for (const item of spliceRes) {
-      //   tempList = tempList[item]
-      // }
-      // const resultList = []
-
-      // const spliceCorRes = data.response.swipeListCor.split('.')
-      // for (const item of tempList) {
-      //   let tempCorItem = item
-      //   for (const item of spliceCorRes) {
-      //     tempCorItem = tempCorItem[item]
-      //   }
-      //   resultList.push({ imageUrl: tempCorItem })
-      // }
-      commit('SET_SWIPE', { swipeList: resultList, swipeAutoplay: data.swipeAutoplay })
+      commit('SET_SWIPE', { id: data.id, swipe: { swipeList: resultList, swipeAutoplay: data.swipeAutoplay }})
     }
   }
 }

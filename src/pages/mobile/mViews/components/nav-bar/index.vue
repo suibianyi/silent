@@ -10,14 +10,20 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }
   },
   computed: {
     navBar() {
-      console.log('这里拿到的navbar', this.$store.getters.navBar)
-      return this.$store.getters.navBar
+      console.log('这里拿到的navbar', this.$store.getters.navBar[this.id] || this.$store.getters.navBar.default)
+      return this.$store.getters.navBar[this.id] || this.$store.getters.navBar.default
     }
   },
   mounted() {
@@ -27,17 +33,17 @@ export default {
       this.$store.dispatch('backNav')
     },
     onClickRight() {
-      if (this.$store.getters.navBar.navBarRight && this.$store.getters.navBar.navBarRight.page && this.$store.getters.navBar.navBarRight.page !== '') {
+      if (this.$store.getters.navBar.navBarRight[this.id] && this.$store.getters.navBar.navBarRight[this.id].page && this.$store.getters.navBar[this.id].navBarRight.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.navBar.navBarRight.page })
       }
       console.log('在navbar', this.$store.getters.navBar.navBarRight)
-      if (this.$store.getters.navBar.navBarRight && this.$store.getters.navBar.navBarRight.func && this.$store.getters.navBar.navBarRight.func !== '') {
+      if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.func && this.$store.getters.navBar[this.id].navBarRight.func !== '') {
         console.log('执行func')
-        this.$store.dispatch(`${this.$store.getters.navBar.navBarRight.func.method}`, { func: this.$store.getters.navBar.navBarRight.func })
+        this.$store.dispatch(`${this.$store.getters.navBar[this.id].navBarRight.func.method}`, { func: this.$store.getters.navBar[this.id].navBarRight.func })
       }
-      if (this.$store.getters.navBar.navBarRight && this.$store.getters.navBar.navBarRight.req && this.$store.getters.navBar.navBarRight.req !== '') {
+      if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.req && this.$store.getters.navBar[this.id].navBarRight.req !== '') {
         console.log('执行req')
-        this.$store.dispatch('sendRequest', { request: this.$store.getters.navBar.navBarRight.req })
+        this.$store.dispatch('sendRequest', { request: this.$store.getters.navBar[this.id].navBarRight.req })
       }
     }
   }

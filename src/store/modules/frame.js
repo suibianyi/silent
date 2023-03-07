@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { assign } from 'lodash'
+// import { assign } from 'lodash'
 import context from '../../pages/mobile/main'
 import { getToken, removeToken } from '@/utils/auth' // get token from cookie
 import storage from './storage'
@@ -872,6 +872,14 @@ const frame = {
     },
     // 选择模板的时候注入模板列表
     setPagelist: ({ commit, state, dispatch }, data) => {
+      const labels = Object.keys(data.pageList)
+      for (const item of labels) {
+        for (const item2 of data.pageList[item].componentList) {
+          if (!item2.id) {
+            item2.id = Math.random().toString(36).slice(-8)
+          }
+        }
+      }
       commit('SET_PAGELIST', data.pageList)
       if (data.page && data.page !== '') {
         dispatch('setCurrentPage', { page: data.page })

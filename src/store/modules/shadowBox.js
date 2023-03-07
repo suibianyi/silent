@@ -1,13 +1,15 @@
-
+import Vue from 'vue'
 const shadowBox = {
   state: {
-    shadowBoxList: []
+    shadowBoxList: {
+      default: []
+    }
   },
   mutations: {
     SET_SHADOW_BOX: (state, data) => {
       console.log('shadowBoxList', data)
       if (data.shadowBoxList && data.shadowBoxList.length) {
-        state.shadowBoxList = data.shadowBoxList
+        Vue.set(state.shadowBoxList, data.id, data.shadowBoxList)
       }
     }
   },

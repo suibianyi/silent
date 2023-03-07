@@ -1,17 +1,19 @@
 
+import Vue from 'vue'
 const grid = {
   state: {
-    gridList: [],
-    gridColumnNum: 4
+    grid: {
+      default: {
+        gridList: [],
+        gridColumnNum: 4
+      }
+    }
   },
   mutations: {
     SET_GRID: (state, data) => {
       console.log('grid是', data)
-      if (data.gridList && data.gridList.length) {
-        state.gridList = data.gridList
-      }
-      if (state.gridColumnNum) {
-        state.gridColumnNum = data.gridColumnNum
+      if (data.id) {
+        Vue.set(state.grid, data.id, { gridList: data.gridList, gridColumnNum: data.gridColumnNum })
       }
     }
   },

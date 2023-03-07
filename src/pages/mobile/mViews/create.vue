@@ -52,19 +52,7 @@
                         </div>
 
                       </van-cell-group>
-                      <!-- <van-swipe-cell v-for="frame in frameList"
-                                      :key="frame._id"
-                                      :stop-propagation="true">
-                        <van-card
-                          :desc="frame.schoolCode+frame.role"
-                          :title="frame.name"
-                          thumb="https://img01.yzcdn.cn/vant/ipad.jpeg"
-                          @click="chooseFrame(frame)"
-                        />
-                      </van-swipe-cell> -->
-                      <div class="add-comp" @click="showAddFram">
-                        <!-- <van-icon name="plus" size="50" /> -->
-                      </div>
+                      <div class="add-comp" @click="showAddFram" />
                     </div>
                   </div>
                 </div>
@@ -102,6 +90,7 @@
                       <component
                         :is="item&&item.key"
                         v-if="item"
+                        :id="item.id"
                         :config="item.config"
                       />
                     </keep-alive>
@@ -144,22 +133,6 @@
                     @on-confirm="confirmConfig"
                   />
                 </draggable>
-                <!-- <van-popup v-model="showAddComponent" :round="true" :style="{ width: '90%', height: '80%' }">
-                  <div class="add-component-popup">
-                    <div :style="{ 'text-align': 'center', 'font-size': '35px' }">
-                      请选择组件
-                    </div>
-                    <div v-for="(item, index) in componentsList"
-                         :key="index">
-                      <van-card
-                        :desc="item.describe.name.key"
-                        :title="item.describe.name.value"
-                        :thumb="`require(@/assets/mobile/list-pic/${item.describe.name.key}.png)` || 'https://img01.yzcdn.cn/vant/ipad.jpeg'"
-                        @click="addComponent(item)"
-                      />
-                    </div>
-                  </div>
-                </van-popup> -->
                 <van-popup v-model="showAddComponent" :round="true" :style="{ width: '90%', height: '80%' }">
                   <div class="add-component-popup">
                     <div :style="{ 'text-align': 'center', 'font-size': '35px' }">
@@ -729,7 +702,7 @@ export default {
     },
     addComponent(item) {
       if (item && item.describe) {
-        this.$store.dispatch('addComponent', { pageListName: this.$store.getters.currentPage, component: { key: item.describe.name.key }})
+        this.$store.dispatch('addComponent', { pageListName: this.$store.getters.currentPage, component: { key: item.describe.name.key, id: Math.random().toString(36).slice(-8) }})
         this.$toast('增加成功')
       }
       this.showAddComponent = false

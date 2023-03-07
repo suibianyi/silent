@@ -1,29 +1,23 @@
+import Vue from 'vue'
 import context from '../../pages/mobile/main'
 const navBar = {
   state: {
     navBar: {
-      navBarTitle: '',
-      navBarRight: {
-        text: '',
-        page: ''
-      },
-      navBarTextColor: '#00afee'
+      default: {
+        navBarTitle: '',
+        navBarRight: {
+          text: '',
+          page: ''
+        },
+        navBarTextColor: '#00afee'
+      }
     }
   },
   mutations: {
     SET_NAV_BAR: (state, data) => {
       console.log('navBar', data)
-      if (data.navBar) {
-        state.navBar = data.navBar
-      } else {
-        state.navBar = {
-          navBarTitle: '',
-          navBarRight: {
-            text: '',
-            page: ''
-          },
-          navBarTextColor: '#00afee'
-        }
+      if (data.id && data.navBar) {
+        Vue.set(state.navBar, data.id, data.navBar)
       }
     }
   },

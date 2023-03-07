@@ -175,7 +175,7 @@ export default {
         item.value = JSON.parse(item.value)
       }
       if (!this.request.id || this.request.id === '') {
-        this.request.id = Date.now().toString(36)
+        this.request.id = Math.random().toString(36).slice(-8)
       }
       this.$store.dispatch('editRequestData', { index: this.configIndex, pageListName: this.$store.getters.currentPage, key: this.request.id, value: this.request })
       console.log('最后的结果是', tempRequest)
