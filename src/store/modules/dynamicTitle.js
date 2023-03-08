@@ -1,17 +1,22 @@
-
+import Vue from 'vue'
 const dynamicTitle = {
   state: {
     dynamicTitle: {
-      rightText: '查看更多',
-      leftText: '校园动态',
-      page: 'school-dynamic-list'
+      default: {
+        rightText: '查看更多',
+        leftText: '校园动态',
+        page: 'school-dynamic-list'
+      }
     }
   },
   mutations: {
     SET_DYNAMIC_TITLE: (state, data) => {
-      if (data.dynamicTitle) {
-        state.dynamicTitle = data.dynamicTitle
+      if (data.id && data.dynamicTitle) {
+        Vue.set(state.dynamicTitle, data.id, data.dynamicTitle)
       }
+      // if (data.dynamicTitle) {
+      //   state.dynamicTitle = data.dynamicTitle
+      // }
       console.log('dynamicTitle', state.dynamicTitle)
     }
   },

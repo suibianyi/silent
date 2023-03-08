@@ -16,14 +16,22 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }
   },
   computed: {
     dynamicTitle() {
-      console.log('查看dynamicTitle', this.$store.getters.dynamicTitle)
-      return this.$store.getters.dynamicTitle
+      console.log('这里拿到的dynamicTitle', this.$store.getters.dynamicTitle[this.id] || this.$store.getters.dynamicTitle.default)
+      return this.$store.getters.dynamicTitle[this.id] || this.$store.getters.dynamicTitle.default
+      // console.log('查看dynamicTitle', this.$store.getters.dynamicTitle)
+      // return this.$store.getters.dynamicTitle
     }
   },
   mounted() {

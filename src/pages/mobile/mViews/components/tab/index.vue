@@ -9,7 +9,12 @@
 <script>
 import _ from 'lodash'
 export default {
-
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       active: this.$store.getters.storage.reference.tabActive || 0
@@ -17,16 +22,17 @@ export default {
   },
   computed: {
     tab() {
-      console.log('tab:', this.$store.getters.tab)
-      return this.$store.getters.tab
+      console.log('这里拿到的tab', this.$store.getters.tab[this.id] || this.$store.getters.tab.default)
+      return this.$store.getters.tab[this.id] || this.$store.getters.tab.default
+      // console.log('tab:', this.$store.getters.tab)
+      // return this.$store.getters.tab
     }
   },
   watch: {
     active: {
       handler(newVal) {
-        console.log('active:', newVal)
-        if (this.$store.getters.tab.tabList.length) {
-          const data = _.assign(this.$store.state.storage.reference, { tab: this.$store.getters.tab.tabList[this.active].value, tabActive: newVal })
+        if (this.$store.getters.tab[this.id].tabList.length) {
+          const data = _.assign(this.$store.state.storage.reference, { tab: this.$store.getters.tab[this.id].tabList[this.active].value, tabActive: newVal })
           this.$store.commit('SET_REFERENCE', data)
           this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: data })
           this.$store.dispatch('refreshPage')
