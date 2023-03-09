@@ -36,6 +36,8 @@
           <component
             :is="item.key"
             v-if="item.component=='output'"
+            :id="item.id"
+            :key="item.id"
             :flag="chooseIndex"
             :type="item.type"
             :show="showComp==item.key"
@@ -422,7 +424,7 @@ export default {
       console.log('添加组件的value', value)
       this.formList.push(value)
       console.log('添加完组件的formList', this.formList)
-      this.request.formData.push({ label: value.label, value: '' })
+      this.request.formData.push({ label: value.label, value: '', id: Math.random().toString(36).slice(-8) })
       this.showAddComponent = false
     },
     onSubmit() {

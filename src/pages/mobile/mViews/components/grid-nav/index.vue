@@ -22,6 +22,7 @@ export default {
   computed: {
     gridList() {
       const temp = this.$store.getters.grid[this.id] || this.$store.getters.grid.default
+      console.log('grid的temp是', temp, this.id)
       return temp.gridList.filter((item) => {
         if (item.auth && item.auth.length > 0) {
           console.log('判断权限的结果是', judgeAuth(item.auth, this.$store.getters.storage.auths))

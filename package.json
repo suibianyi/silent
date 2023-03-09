@@ -1,7 +1,7 @@
 {
   "name": "muse-wechat-office-account",
   "version": "v1.8.4",
-  "description": "缪斯微信公众号H5服务",
+  "description": "",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",

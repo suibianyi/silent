@@ -878,6 +878,11 @@ const frame = {
           if (!item2.id) {
             item2.id = Math.random().toString(36).slice(-8)
           }
+          if (item2.key === 'form-page' && item2.formList.length) {
+            for (const item3 of item2.formList) {
+              item3.id = Math.random().toString(36).slice(-8)
+            }
+          }
         }
       }
       commit('SET_PAGELIST', data.pageList)

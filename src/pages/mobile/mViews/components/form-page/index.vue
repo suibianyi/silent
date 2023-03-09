@@ -25,6 +25,8 @@
       <component
         :is="item.key"
         v-if="item.component=='output'"
+        :id="item.id"
+        :key="item.id"
         :flag="chooseIndex"
         :type="item.type"
         :show="showComp==item.key"

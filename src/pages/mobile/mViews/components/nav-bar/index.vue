@@ -33,10 +33,10 @@ export default {
       this.$store.dispatch('backNav')
     },
     onClickRight() {
-      if (this.$store.getters.navBar.navBarRight[this.id] && this.$store.getters.navBar.navBarRight[this.id].page && this.$store.getters.navBar[this.id].navBarRight.page !== '') {
-        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.navBar.navBarRight.page })
+      console.log('在navbar', this.$store.getters.navBar[this.id].navBarRight)
+      if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.page && this.$store.getters.navBar[this.id].navBarRight.page !== '') {
+        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.navBar[this.id].navBarRight.page })
       }
-      console.log('在navbar', this.$store.getters.navBar.navBarRight)
       if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.func && this.$store.getters.navBar[this.id].navBarRight.func !== '') {
         console.log('执行func')
         this.$store.dispatch(`${this.$store.getters.navBar[this.id].navBarRight.func.method}`, { func: this.$store.getters.navBar[this.id].navBarRight.func })
