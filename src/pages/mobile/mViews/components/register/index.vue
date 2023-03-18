@@ -239,7 +239,8 @@ export default {
         grade: '',
         clazz: '',
         studentId: '',
-        parentTitle: ''
+        parentTitle: '',
+        telephone: ''
       },
       // 提交
       submitStatus: false,
@@ -260,7 +261,7 @@ export default {
       gradeVal: '',
       studentVal: '',
       columns: ['杭州', '宁波', '温州', '绍兴', '湖州', '嘉兴', '金华', '衢州'],
-      schoolCode: 'HSHDEV',
+      schoolCode: '', // "da352b38d30948cdb596ffd5eba0ef34"
       grades: [],
       codeMsg: '获取验证码',
       timer: 0,
@@ -304,11 +305,6 @@ export default {
       this.classId = detailInfo.classId
       this.schoolId = detailInfo.schoolId
       console.log('班级ID', this.classId, this.schoolId)
-    } else {
-      // this.classId = "bbbf0c8b41ec4e889db15358428e2400"
-      // this.schoolId = "da352b38d30948cdb596ffd5eba0ef34"
-      // 没有获取到班级id
-      // this.codeShow=true
     }
   },
   onReady() {
@@ -493,8 +489,9 @@ export default {
       }
       this.form.account = this.form.tel
       this.form.type = 'mwoa'
+      this.form.telephone = this.form.tel
       const result = await parentRegister({
-        schoolCode: this.schoolCode,
+        schoolId: this.schoolCode,
         ...this.form
       })
       if (result.code === 0) {
@@ -548,7 +545,8 @@ export default {
       // 	this.$refs.uCode.start();
 
       // }, 2000);
-      const telphone = this.form.telephone
+      const telphone = this.form.tel
+      console.log('有区别?', telphone, this.form.tel, this.form)
       if (!this.checkPhone(telphone)) return
       const result = await getTelCode({
         account: telphone,
@@ -613,7 +611,7 @@ export default {
     },
     async getGrades() {
       const { data } = await getGradeList({
-        schoolCode: this.schoolCode,
+        parentId: this.schoolCode,
         resourceType: 1,
         currentPage: 1,
         pageSize: 10000
@@ -666,7 +664,7 @@ export default {
     },
     async getStuents(grade, clazz) {
       const { code, data } = await getStudentList({
-        schoolCode: this.schoolCode,
+        parentId: this.schoolCode,
         classId: clazz,
         gradeId: grade,
         currentPage: 1,
@@ -720,6 +718,15 @@ export default {
       for (const item of this.config.request.data) {
         sendata[item.key] = item.value
       }
+    },
+    clickNotice() {
+      const goto = this.$store.getters.noticeClick
+      if (goto.page && goto.page !== '') {
+        this.$store.dispatch('setCurrentPage', { page: goto.page })
+      }
+      this.$emit('input', this.dialog)
+      this.$emit('confirm', this.dialog)
+      this.$emit('on-close')
     }
   }
 }

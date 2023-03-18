@@ -431,14 +431,12 @@ export default {
     // this.frameList = (await getFrameList()).data
     console.log('我拿到的列表是', this.frameList)
     console.log('我要开始赋值啦', this.$store.getters.currentPage)
-    // this.$store.dispatch('setCurrentPage', { page: this.$store.getters.currentPage })
     this.$nextTick(() => {
       this.innerWidth = document.getElementsByClassName('phone-area')[0].clientWidth
       this.innerHeight = document.getElementsByClassName('phone-area')[0].clientHeight
       console.log('innerWidth', this.innerWidth)
       console.log('innerHeight', this.innerHeight)
     })
-    // this.$store.dispatch('loadPageList', { page: this.$store.getters.currentPage })
   },
   // 方法集合
   methods: {
@@ -672,14 +670,13 @@ export default {
       this.configIndex = index
       this.configComponent = `${item.key}-config`
       this.$set(this.components[index], 'shadeWindow', false)
-      //   this.editData = item
       this.edit = false
       this.dialogVisible = true
     },
     closeConfigDialog() {
       this.dialogVisible = false
       // 刷新
-      this.$store.dispatch('setCurrentPage', { page: this.$store.getters.currentPage, back: true })
+      this.$store.dispatch('loadPageList', { page: this.$store.getters.currentPage })
     },
     confirmConfig() {},
     del(index) {

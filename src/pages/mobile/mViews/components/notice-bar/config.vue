@@ -53,9 +53,6 @@
               <van-icon name="close" :size="20" @click="delSpecialData(index)" />
             </div>
           </div>
-          <!-- <div style="margin: 16px;">
-          <van-button round block type="info" native-type="submit" @click="query">请求</van-button>
-        </div> -->
           请求结果解析设置
           <van-field
             v-model="response.textList"
@@ -80,16 +77,12 @@
     </van-popup>
     <tree :show="showTree" :list="treeList" @result="chooseResult"
           @on-close="closePage" />
-    <!-- <page-list :show="chooseNextPage"
-               @choose-page="choosePage"
-               @on-close="closeChoosePage" /> -->
     <page-list v-if="chooseNextPage"
                :show="chooseNextPage"
                :func="!noticeClick.func||noticeClick.func==''? {}:noticeClick.func"
                :req="!noticeClick.req||noticeClick.req==''? {}:noticeClick.req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :action="!noticeClick.action||noticeClick.action==''? {}:noticeClick.action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
@@ -105,7 +98,7 @@ import {
 import _ from 'lodash'
 import tree from '../tree/index123.vue'
 import pageList from '../pagelist/index123.vue'
-import { formatPageListShow, formatPageListRes } from '@/mUtils'
+import { formatPageListShow } from '@/mUtils'
 export default {
   components: {
     pageList,
@@ -181,7 +174,7 @@ export default {
       this.chooseNextPage = false
     },
     chooseVal(val) {
-      this.noticeClick = formatPageListRes(this.noticeClick, val)
+      this.noticeClick.action = val
     },
     clickPage() {
       this.chooseNextPage = true

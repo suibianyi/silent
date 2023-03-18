@@ -3,7 +3,7 @@
     <div v-for="value in shadowBoxList" :key="value.text" @click="switchPic(value)">
       <div class="container" :class="value.empty? 'nobox' : ''">
         <div class="content">
-          <img :src="value.imageUrl" alt="">
+          <img v-if="value.imageUrl" :src="value.imageUrl" alt="">
           <div v-if="value.text" class="name">
             {{ value.text }}
           </div>
@@ -70,8 +70,11 @@ export default {
   },
   methods: {
     switchPic(value) {
-      if (value.page) {
+      if (value.page && value.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: value.page })
+      }
+      if (value.action) {
+        this.$store.dispatch('handelAction', value.action)
       }
     }
   }

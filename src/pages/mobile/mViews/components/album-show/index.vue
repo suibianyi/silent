@@ -68,8 +68,7 @@ export default {
       console.log('执行confirmChecked', this.$store.getters.album)
       if (this.$store.getters.album.del && this.$store.getters.album.del.page && this.$store.getters.album.del.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.album.del.page })
-      }
-      if (this.$store.getters.album.del && this.$store.getters.album.del.req && this.$store.getters.album.del.req !== '') {
+      } else if (this.$store.getters.album.del && this.$store.getters.album.del.req && this.$store.getters.album.del.req !== '') {
         const sendata = {}
         let delArr = []
         this.$store.getters.album.albumList.forEach(o => {
@@ -87,6 +86,8 @@ export default {
         })
         this.$store.dispatch('refreshPage')
         // this.$store.dispatch(`${this.$store.getters.album.del.func.method}`, { func: this.$store.getters.album.del.func })
+      } else {
+        this.$store.dispatch('handelAction', this.$store.getters.album.del.action)
       }
     },
     imageChecked(index, checked) {

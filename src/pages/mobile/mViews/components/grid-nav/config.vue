@@ -37,9 +37,9 @@
                :show="chooseNextPage"
                :func="!gridList[tempIndex].func||gridList[tempIndex].func==''? {}:gridList[tempIndex].func"
                :req="!gridList[tempIndex].req||gridList[tempIndex].req==''? {}:gridList[tempIndex].req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :page="!gridList[tempIndex].page||gridList[tempIndex].page==''? '':gridList[tempIndex].page"
+               :action="!gridList[tempIndex].action||gridList[tempIndex].action==''? {}:gridList[tempIndex].action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
@@ -48,7 +48,7 @@
 import pageList from '../pagelist/index123.vue'
 import tree from '../tree/index123.vue'
 import formUpload from '../upload'
-import { formatPageListShow, formatPageListRes, formatAuthShow } from '@/mUtils'
+import { formatPageListShow, formatAuthShow } from '@/mUtils'
 import { AUTHS_TREE } from '@/mUtils/auth'
 export default {
   components: {
@@ -145,7 +145,7 @@ export default {
       this.chooseNextPage = false
     },
     chooseVal(val) {
-      this.gridList[this.tempIndex] = formatPageListRes(this.gridList[this.tempIndex], val)
+      this.gridList[this.tempIndex].action = val
     },
     clickPage(index) {
       this.tempIndex = index
@@ -155,7 +155,7 @@ export default {
       this.$emit('on-close')
     },
     addData() {
-      this.gridList.push({ imageUrl: '', page: '', text: '', auth: [] })
+      this.gridList.push({ imageUrl: '', action: '', text: '', auth: [] })
     },
     delData(index) {
       this.gridList.splice(index, 1)

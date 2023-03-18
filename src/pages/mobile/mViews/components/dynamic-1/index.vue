@@ -65,6 +65,8 @@ export default {
         this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.commit('SET_REFERENCE', value)
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.dynamic[this.id].dynamicJumpPage.page })
+      } else {
+        this.$store.dispatch('handelAction', value.action)
       }
     }
   }

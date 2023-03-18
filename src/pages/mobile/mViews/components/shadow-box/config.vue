@@ -39,9 +39,9 @@
                :show="chooseNextPage"
                :func="!shadowBoxList[tempIndex].func||shadowBoxList[tempIndex].func==''? {}:shadowBoxList[tempIndex].func"
                :req="!shadowBoxList[tempIndex].req||shadowBoxList[tempIndex].req==''? {}:shadowBoxList[tempIndex].req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :page="!shadowBoxList[tempIndex].page||shadowBoxList[tempIndex].page==''? '':shadowBoxList[tempIndex].page"
+               :action="!shadowBoxList[tempIndex].action||shadowBoxList[tempIndex].action==''? {}:shadowBoxList[tempIndex].action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
@@ -50,7 +50,7 @@
 import _ from 'lodash'
 import pageList from '../pagelist/index123.vue'
 import formUpload from '../upload'
-import { formatPageListShow, formatPageListRes, formatAuthShow } from '@/mUtils'
+import { formatPageListShow, formatAuthShow } from '@/mUtils'
 import { AUTHS_TREE } from '@/mUtils/auth'
 export default {
   components: {
@@ -141,7 +141,7 @@ export default {
     //   this.chooseNextPage = true
     // },
     chooseVal(val) {
-      this.shadowBoxList[this.tempIndex] = formatPageListRes(this.shadowBoxList[this.tempIndex], val)
+      this.shadowBoxList[this.tempIndex].action = val
     },
     clickPage(index) {
       this.tempIndex = index
@@ -151,7 +151,7 @@ export default {
       this.$emit('on-close')
     },
     addData() {
-      this.shadowBoxList.push({ imageUrl: '', page: '', text: '' })
+      this.shadowBoxList.push({ imageUrl: '', action: '', text: '' })
     },
     delData(index) {
       this.shadowBoxList.splice(index, 1)

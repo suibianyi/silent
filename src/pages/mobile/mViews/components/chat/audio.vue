@@ -7,10 +7,6 @@
       <div id="remotetracks-3" :style="{ 'width': `33%`, 'height': `33%`}" /> -->
     </div>
     <div class="handle">
-      <!-- <div v-if="enableMic" class="video-pic" @click="voiceVideo">
-        <van-image height="90" :src="videoVoice" /></div>
-      <div v-if="!enableMic" class="video-pic" @click="voiceVideo">
-        <van-image height="90" :src="videoNoVoice" /></div> -->
       <div class="hang-pic" style="margin-left: 20px;" @click="hangVideo">
         <van-image height="90" :src="videoHang" /></div>
     </div>

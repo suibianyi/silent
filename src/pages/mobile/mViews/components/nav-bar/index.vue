@@ -34,16 +34,20 @@ export default {
     },
     onClickRight() {
       console.log('在navbar', this.$store.getters.navBar[this.id].navBarRight)
-      if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.page && this.$store.getters.navBar[this.id].navBarRight.page !== '') {
-        this.$store.dispatch('setCurrentPage', { page: this.$store.getters.navBar[this.id].navBarRight.page })
-      }
-      if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.func && this.$store.getters.navBar[this.id].navBarRight.func !== '') {
-        console.log('执行func')
-        this.$store.dispatch(`${this.$store.getters.navBar[this.id].navBarRight.func.method}`, { func: this.$store.getters.navBar[this.id].navBarRight.func })
-      }
-      if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.req && this.$store.getters.navBar[this.id].navBarRight.req !== '') {
-        console.log('执行req')
-        this.$store.dispatch('sendRequest', { request: this.$store.getters.navBar[this.id].navBarRight.req })
+      if (this.$store.getters.navBar[this.id].navBarRight.action) {
+        this.$store.dispatch('handelAction', this.$store.getters.navBar[this.id].navBarRight.action)
+      } else {
+        if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.page && this.$store.getters.navBar[this.id].navBarRight.page !== '') {
+          this.$store.dispatch('setCurrentPage', { page: this.$store.getters.navBar[this.id].navBarRight.page })
+        }
+        if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.func && this.$store.getters.navBar[this.id].navBarRight.func !== '') {
+          console.log('执行func')
+          this.$store.dispatch(`${this.$store.getters.navBar[this.id].navBarRight.func.method}`, { func: this.$store.getters.navBar[this.id].navBarRight.func })
+        }
+        if (this.$store.getters.navBar[this.id].navBarRight && this.$store.getters.navBar[this.id].navBarRight.req && this.$store.getters.navBar[this.id].navBarRight.req !== '') {
+          console.log('执行req')
+          this.$store.dispatch('sendRequest', { request: this.$store.getters.navBar[this.id].navBarRight.req })
+        }
       }
     }
   }

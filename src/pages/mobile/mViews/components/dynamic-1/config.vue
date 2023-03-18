@@ -117,9 +117,8 @@
                :show="chooseNextPage"
                :func="!dynamicJumpPage.func||dynamicJumpPage.func==''? {}:dynamicJumpPage.func"
                :req="!dynamicJumpPage.req||dynamicJumpPage.req==''? {}:dynamicJumpPage.req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :action="!dynamicJumpPage.action||dynamicJumpPage.action==''? {}:dynamicJumpPage.action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
@@ -129,7 +128,7 @@ import {
   splitTreeRes,
   formatTree
 } from '@/mUtils'
-import { formatPageListShow, formatPageListRes } from '@/mUtils'
+import { formatPageListShow } from '@/mUtils'
 import {
   mRequest
 } from '@/api/request'
@@ -229,7 +228,7 @@ export default {
     //   this.dynamicJumpPage = page
     // },
     chooseVal(val) {
-      this.dynamicJumpPage = formatPageListRes(this.dynamicJumpPage, val)
+      this.dynamicJumpPage.action = val
     },
     clickPage() {
       console.log('我点击了页面')

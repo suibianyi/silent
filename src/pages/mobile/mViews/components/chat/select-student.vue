@@ -1,11 +1,11 @@
 <template>
-  <div class="cell">
+  <div class="select-children">
     <van-nav-bar title="选择孩子" left-text="返回" left-arrow @click-left="onClickLeft" />
     <van-cell-group>
       <van-cell v-for="value in cellList" :key="value.trueName" :title="value.trueName" is-link size="large"
                 @click="switchCell(value)">
         <template #default>
-          <van-badge :content="value.unread" />
+          <van-badge v-if="isShow(value)" :content="value.unread" />
         </template>
       </van-cell>
     </van-cell-group>
@@ -80,6 +80,11 @@ export default {
           console.log('res.unread', this.cellList[i])
         }
       }
+    },
+    isShow(info) {
+      const count = info.unread
+
+      return count
     }
   }
 
@@ -87,7 +92,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.cell {
+.select-children {
     padding: 0px 0px 0px 0px;
 }
 </style>

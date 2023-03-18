@@ -35,6 +35,8 @@ export default {
       const goto = this.$store.getters.noticeClick
       if (goto.page && goto.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: goto.page })
+      } else {
+        this.$store.dispatch('handelAction', this.goto.action)
       }
     }
   }

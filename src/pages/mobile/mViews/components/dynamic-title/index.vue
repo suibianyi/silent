@@ -40,6 +40,8 @@ export default {
     switchIt(value) {
       if (value.page && value.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: value.page })
+      } else {
+        this.$store.dispatch('handelAction', value.action)
       }
     }
   }

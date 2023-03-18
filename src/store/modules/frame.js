@@ -847,7 +847,7 @@ const frame = {
       if (!data.back) {
         commit('PUSH_PAGECHANGE', data.page)
       }
-      console.log('开始切换页面123456798', state)
+      console.log('开始切换页面', state)
       if (state.pageList[data.page] && state.pageList[data.page].requestData) {
         console.log('开始推入请求', state.pageList[data.page].requestData)
         dispatch('addRequest', state.pageList[data.page].requestData)

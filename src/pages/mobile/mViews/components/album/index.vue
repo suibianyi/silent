@@ -101,6 +101,10 @@ export default {
         console.log('执行req')
         this.$store.dispatch('sendRequest', { request: this.$store.getters.album.del.req })
       }
+      if (this.$store.getters.album.del && this.$store.getters.album.del.action && this.$store.getters.album.del.action.length) {
+        console.log('执行req')
+        this.$store.dispatch('handelAction', this.$store.getters.album.del.action)
+      }
     },
     editPhoto(value) {
       console.log('点击了编辑', this.$store.getters.album.edit)
@@ -108,10 +112,11 @@ export default {
       this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
       if (this.$store.getters.album.edit && this.$store.getters.album.edit.page && this.$store.getters.album.edit.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.album.edit.page })
-      }
-      if (this.$store.getters.album.edit && this.$store.getters.album.edit.func && this.$store.getters.album.edit.func !== '') {
+      } else if (this.$store.getters.album.edit && this.$store.getters.album.edit.func && this.$store.getters.album.edit.func !== '') {
         console.log('执行func')
         this.$store.dispatch(`${this.$store.getters.album.edit.func.method}`, { func: this.$store.getters.album.edit.func })
+      } else {
+        this.$store.dispatch('handelAction', this.$store.getters.album.edit.action)
       }
     },
     onLoad() {
@@ -128,6 +133,8 @@ export default {
         this.$store.commit('ADD_PAGE_STORE', { pageStoreName: this.$store.getters.currentPage, pageStoreData: value })
         this.$store.dispatch('setCurrentPage', { page: this.$store.getters.album.jumpPage })
         // this.$store.commit(`${this.$store.getters.dynamicJumpDate}`, value)
+      } else {
+        this.$store.dispatch('handelAction', this.$store.getters.album.jumpPage.action)
       }
     }
   }

@@ -41,8 +41,11 @@ export default {
   },
   methods: {
     switchPic(value) {
-      if (value.page) {
+      if (value.page && value.page !== '') {
         this.$store.dispatch('setCurrentPage', { page: value.page })
+      }
+      if (value.action) {
+        this.$store.dispatch('handelAction', value.action)
       }
     }
   }

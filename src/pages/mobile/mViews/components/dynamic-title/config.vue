@@ -18,16 +18,15 @@
                :show="chooseNextPage"
                :func="!dynamicTitle.func||dynamicTitle.func==''? {}:dynamicTitle.func"
                :req="!dynamicTitle.req||dynamicTitle.req==''? {}:dynamicTitle.req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :action="!dynamicTitle.action||dynamicTitle.action==''? {}:dynamicTitle.action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
 
 <script>
 import pageList from '../pagelist/index123.vue'
-import { formatPageListShow, formatPageListRes } from '@/mUtils'
+import { formatPageListShow } from '@/mUtils'
 export default {
   components: {
     pageList
@@ -89,7 +88,7 @@ export default {
     //   this.dynamicTitle.page = page
     // },
     chooseVal(val) {
-      this.dynamicTitle = formatPageListRes(this.dynamicTitle, val)
+      this.dynamicTitle.action = val
     },
     clickPage(index) {
       this.chooseNextPage = true

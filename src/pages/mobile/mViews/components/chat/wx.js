@@ -4,10 +4,10 @@ import {
 } from '@/api/request'
 
 export async function getWxSdk(schoolCode) {
-  const { wx } = window
-  const path = window.location.pathname
-  const locationHref = window.location.href
-  const originPath = window.location.origin
+  const { wx, location } = window
+  const path = location.pathname
+  const locationHref = location.href
+  const originPath = location.origin
 
   const data = {
     locationHref,
@@ -15,6 +15,15 @@ export async function getWxSdk(schoolCode) {
     origin: originPath,
     schoolCode
   }
+  const api = [
+    'startRecord',
+    'stopRecord',
+    'onVoiceRecordEnd',
+    'uploadVoice',
+    'playVoice',
+    'stopVoice',
+    'onVoicePlayEnd'
+  ]
   const res = await mRequest({
     url: `/wx/config/path`,
     method: 'post',
@@ -28,16 +37,10 @@ export async function getWxSdk(schoolCode) {
           'uploadImage',
           'previewImage',
           'downloadImage',
-          'startRecord',
-          'stopRecord',
-          'onVoiceRecordEnd',
-          'playVoice',
           'pauseVoice',
-          'stopVoice',
-          'onVoicePlayEnd',
-          'uploadVoice',
           'downloadVoice',
-          'getLocation'
+          'getLocation',
+          ...api
         ]
       }, res.config)
 
@@ -50,15 +53,7 @@ export async function getWxSdk(schoolCode) {
       })
 
       wx.checkJsApi({
-        jsApiList: [
-          'startRecord',
-          'stopRecord',
-          'onVoiceRecordEnd',
-          'uploadVoice',
-          'playVoice',
-          'stopVoice',
-          'onVoicePlayEnd'
-        ], // 需要检测的 JS 接口列表，所有 JS 接口列表见附录2,
+        jsApiList: api, // 需要检测的 JS 接口列表，所有 JS 接口列表见附录2,
         success: function(res) {
         // 以键值对的形式返回，可用的 api 值true，不可用为false
         // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}

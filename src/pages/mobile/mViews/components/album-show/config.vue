@@ -91,9 +91,8 @@
                :show="chooseNextPage"
                :func="!tempPageList.func||tempPageList.func==''?{}:tempPageList.func"
                :req="!tempPageList.req||tempPageList.req==''?{}:tempPageList.req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :action="!tempPageList.action||tempPageList.action==''? {}:tempPageList.action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
@@ -103,7 +102,7 @@ import {
   splitTreeRes,
   formatTree
 } from '@/mUtils'
-import { formatPageListShow, formatPageListRes } from '@/mUtils'
+import { formatPageListShow } from '@/mUtils'
 import {
   mRequest
 } from '@/api/request'
@@ -220,15 +219,15 @@ export default {
     //   this.jumpPage = page
     // },
     chooseVal(val) {
-      this.tempPageList = formatPageListRes(this.tempPageList, val)
+      this.tempPageList = val
       if (this.model === 'page') {
-        this.jumpPage = this.tempPageList.page
+        this.jumpPage.action = this.tempPageList
       }
       if (this.model === 'del') {
-        this.del = this.tempPageList
+        this.del.action = this.tempPageList
       }
       if (this.model === 'edit') {
-        this.edit = this.tempPageList
+        this.edit.action = this.tempPageList
       }
     },
     clickPage(val) {

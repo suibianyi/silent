@@ -27,15 +27,14 @@
                :show="chooseNextPage"
                :func="!navBar.navBarRight.func||navBar.navBarRight.func==''?{}:navBar.navBarRight.func"
                :req="!navBar.navBarRight.req||navBar.navBarRight.req==''?{}:navBar.navBarRight.req"
-               @choose-page="chooseVal"
-               @choose-func="chooseVal"
-               @choose-req="chooseVal"
+               :action="!navBar.navBarRight.action||navBar.navBarRight.action==''? {}:navBar.navBarRight.action"
+               @result="chooseVal"
                @on-close="closeChoosePage" />
   </div>
 </template>
 
 <script>
-import { formatPageListShow, formatPageListRes } from '@/mUtils'
+import { formatPageListShow } from '@/mUtils'
 import pageList from '../pagelist/index123.vue'
 import { Compact } from 'vue-color'
 
@@ -118,7 +117,7 @@ export default {
       this.navBar.navBarTextColor = value.hex
     },
     chooseVal(val) {
-      this.navBar.navBarRight = formatPageListRes(this.navBar.navBarRight, val)
+      this.navBar.navBarRight.action = val
     },
     closeChoosePage() {
       this.chooseNextPage = false
